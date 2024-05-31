@@ -1,0 +1,12 @@
+[user]
+  name = {{ .lunar_name }}
+  email = {{ .lunar_email }}
+  signingkey = {{ .github_signing_key }}
+
+[commit]
+  gpgsign = true
+
+[gpg]
+  format = ssh
+[url "ssh://git@github.com/"]
+  insteadOf = https://github.com/
