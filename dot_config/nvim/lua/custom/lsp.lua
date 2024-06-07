@@ -1,11 +1,11 @@
-require("neodev").setup {}
+require("neodev").setup({})
 
 local capabilities = nil
 if pcall(require, "cmp_nvim_lsp") then
 	capabilities = require("cmp_nvim_lsp").default_capabilities()
 end
 
-local lspconfig = require "lspconfig"
+local lspconfig = require("lspconfig")
 
 local servers = {
 	sqlls = true,
@@ -100,7 +100,7 @@ local servers = {
 		},
 	},
 	tsserver = {
-		root_dir = lspconfig.util.root_pattern "package.json",
+		root_dir = lspconfig.util.root_pattern("package.json"),
 		single_file_support = false,
 		settings = {
 			typescript = {
@@ -169,7 +169,7 @@ local ensure_installed = {
 }
 
 vim.list_extend(ensure_installed, servers_to_install)
-require("mason-tool-installer").setup { ensure_installed = ensure_installed }
+require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
 
 for name, config in pairs(servers) do
 	if config == true then
