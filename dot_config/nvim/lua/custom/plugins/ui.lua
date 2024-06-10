@@ -45,6 +45,7 @@ return {
 				"neo-tree",
 				"gitcommit",
 				"TelescopePrompt",
+				"oil",
 			},
 			delay = 100,
 		},
