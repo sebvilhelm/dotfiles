@@ -1,6 +1,7 @@
 return {
 	{
 		"nvim-neotest/neotest",
+		enabled = false,
 		dependencies = {
 			"nvim-neotest/nvim-nio",
 			"nvim-lua/plenary.nvim",
@@ -8,9 +9,9 @@ return {
 			"nvim-neotest/neotest-go",
 		},
 		config = function()
-			local neotest = require "neotest"
+			local neotest = require("neotest")
 
-			local neotest_ns = vim.api.nvim_create_namespace "neotest"
+			local neotest_ns = vim.api.nvim_create_namespace("neotest")
 			vim.diagnostic.config({
 				virtual_text = {
 					format = function(diagnostic)
@@ -26,11 +27,11 @@ return {
 			end, {})
 
 			vim.api.nvim_create_user_command("TestRunDebug", function()
-				neotest.run.run { strategy = "dap" }
+				neotest.run.run({ strategy = "dap" })
 			end, {})
 
 			vim.api.nvim_create_user_command("TestRunFile", function()
-				neotest.run.run(vim.fn.expand "%")
+				neotest.run.run(vim.fn.expand("%"))
 			end, {})
 
 			vim.api.nvim_create_user_command("TestRunAll", function()
@@ -45,7 +46,7 @@ return {
 				neotest.summary.toggle()
 			end, {})
 
-			neotest.setup {
+			neotest.setup({
 				summary = {
 					enabled = true,
 					follow = true,
@@ -60,14 +61,18 @@ return {
 				-- 	open = true,
 				-- },
 				adapters = {
-					require "neotest-go" {
+					require("neotest-go")({
 						experimental = {
 							test_table = true,
 						},
 						args = { "-race" },
-					},
+					}),
 				},
-			}
+			})
 		end,
+	},
+
+	{
+		"vim-test/vim-test",
 	},
 }
