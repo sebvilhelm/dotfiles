@@ -1,18 +1,18 @@
-require("neodev").setup({})
+require("neodev").setup {}
 
 local capabilities = nil
 if pcall(require, "cmp_nvim_lsp") then
 	capabilities = require("cmp_nvim_lsp").default_capabilities()
 end
 
-local lspconfig = require("lspconfig")
+local lspconfig = require "lspconfig"
 
 local servers = {
 	sqlls = true,
 	cssls = true,
 	cssmodules_ls = true,
 	dockerls = true,
-	basedpyright = true,
+	pyright = true,
 	bufls = true,
 	graphql = true,
 	html = true,
@@ -74,14 +74,14 @@ local servers = {
 					enable = false,
 					url = "",
 				},
-				schemas = require("schemastore").yaml.schemas({
+				schemas = require("schemastore").yaml.schemas {
 					extra = {
 						description = "Shuttle go plan",
 						fileMatch = "shuttle.yaml",
 						name = "shuttle.yaml",
 						url = "file:///Users/svn/code/lunar/lw-shuttle-go-plan/.schemastore/schema.json",
 					},
-				}),
+				},
 			},
 		},
 	},
@@ -107,7 +107,7 @@ local servers = {
 		},
 	},
 	tsserver = {
-		root_dir = lspconfig.util.root_pattern("package.json"),
+		root_dir = lspconfig.util.root_pattern "package.json",
 		single_file_support = false,
 		settings = {
 			typescript = {
@@ -176,7 +176,7 @@ local ensure_installed = {
 }
 
 vim.list_extend(ensure_installed, servers_to_install)
-require("mason-tool-installer").setup({ ensure_installed = ensure_installed })
+require("mason-tool-installer").setup { ensure_installed = ensure_installed }
 
 for name, config in pairs(servers) do
 	if config == true then
