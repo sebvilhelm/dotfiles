@@ -107,7 +107,7 @@ local servers = {
 			},
 		},
 	},
-	tsserver = {
+	ts_ls = {
 		root_dir = lspconfig.util.root_pattern "package.json",
 		single_file_support = false,
 		settings = {
