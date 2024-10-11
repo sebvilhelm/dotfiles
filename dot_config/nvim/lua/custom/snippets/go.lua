@@ -49,7 +49,7 @@ ls.add_snippets("go", {
 		fmta("for <choice> {\n<body>\n}\n<finish>", {
 			choice = c(1, {
 				i(nil, ""),
-				sn(nil, { i(1, "i"), t ", ", i(2, "v"), t " := range ", i(3, "values") }),
+				sn(nil, { i(1, "_"), t ", ", i(2, "v"), t " := range ", i(3, "values") }),
 			}),
 			body = i(2),
 			finish = i(0),
