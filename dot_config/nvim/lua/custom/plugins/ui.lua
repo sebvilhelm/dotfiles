@@ -28,29 +28,4 @@ return {
 			},
 		},
 	},
-
-	-- Doesn't work
-	-- { "norcalli/nvim-colorizer.lua", opts = {} },
-
-	{
-		"RRethy/vim-illuminate",
-		opts = {
-			providers = {
-				"lsp",
-				"treesitter",
-				"regex",
-			},
-			filetypes_denylist = {
-				"NvimTree",
-				"neo-tree",
-				"gitcommit",
-				"TelescopePrompt",
-				"oil",
-			},
-			delay = 100,
-		},
-		config = function(_, opts)
-			require("illuminate").configure(opts)
-		end,
-	},
 }
