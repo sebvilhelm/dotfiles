@@ -1,0 +1,9 @@
+[user]
+name = "Sebastian Vilhelm Juhl"
+email = "seb.vilhelm@gmail.com"
+
+[ui]
+merge-editor = ["nvim", "-d", "-O", "$left", "$base", "$right"]
+
+[ui.diff]
+tool = ["difft", "--color=always", "$left", "$right"]
