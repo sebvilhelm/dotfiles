@@ -13,7 +13,7 @@ local servers = {
 	cssmodules_ls = true,
 	dockerls = true,
 	pyright = true,
-	bufls = true,
+	buf_ls = true,
 	graphql = true,
 	html = true,
 	marksman = true,
@@ -96,17 +96,18 @@ local servers = {
 			},
 		},
 	},
-	tailwindcss = {
-		settings = {
-			tailwindCSS = {
-				experimental = {
-					classRegex = {
-						{ "tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
-					},
-				},
-			},
-		},
-	},
+	tailwindcss = true,
+	-- tailwindcss = {
+	-- 	settings = {
+	-- 		tailwindCSS = {
+	-- 			experimental = {
+	-- 				classRegex = {
+	-- 					{ "tv\\((([^()]*|\\([^()]*\\))*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]" },
+	-- 				},
+	-- 			},
+	-- 		},
+	-- 	},
+	-- },
 	ts_ls = {
 		root_dir = lspconfig.util.root_pattern "package.json",
 		single_file_support = false,
