@@ -2,6 +2,10 @@
 name = "Sebastian Vilhelm Juhl"
 email = "seb.vilhelm@gmail.com"
 
+[signing]
+sign-all = true
+backend = "ssh"
+
 [ui]
 diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
 default-command = "log"
