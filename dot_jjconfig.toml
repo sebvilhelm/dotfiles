@@ -5,6 +5,7 @@ email = "seb.vilhelm@gmail.com"
 [signing]
 sign-all = true
 backend = "ssh"
+key = {{ .github_signing_key }}
 
 [ui]
 diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
