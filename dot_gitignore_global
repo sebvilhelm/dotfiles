@@ -1,3 +1,4 @@
 .bin\ --global
 .DS_Store
 .jj/
+mise.local.toml
