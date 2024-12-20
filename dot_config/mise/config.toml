@@ -1,5 +1,5 @@
 [env]
-'_'.file = ["local.env", ".env"]
+_.file = ["local.env", ".env"]
 
 [tools]
 node = "22"
