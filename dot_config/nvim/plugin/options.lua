@@ -17,6 +17,10 @@ opt.clipboard = "unnamedplus" -- Use global clipboard
 opt.number = true
 opt.relativenumber = true
 
+opt.shiftwidth = 2
+opt.softtabstop = 2 -- Sets the number of columns for a TAB
+opt.tabstop = 2 -- The width of a TAB is set to 4.
+
 opt.signcolumn = "yes" -- always show the signcolumn on LH side
 
 -- Better splitting
@@ -26,7 +30,7 @@ opt.splitright = true
 opt.shada = { "'10", "<0", "s10", "h" }
 
 -- Don't have `o` add a comment
-opt.formatoptions:remove("o")
+opt.formatoptions:remove "o"
 
 opt.undofile = true
 
@@ -36,8 +40,9 @@ opt.winbar = "%f %m"
 
 -- Highlight Yanked Text
 vim.api.nvim_create_autocmd("TextYankPost", {
+	group = vim.api.nvim_create_augroup("user-highlighy-yank", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
+		vim.highlight.on_yank { higroup = "Visual", timeout = 200 }
 	end,
 })
 
@@ -59,6 +64,3 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- opt.showtabline = 0
 -- opt.smartindent = true -- make indenting smarter again
 -- opt.expandtab = true -- Expand TABs to spaces
-opt.shiftwidth = 2
-opt.softtabstop = 2 -- Sets the number of columns for a TAB
-opt.tabstop = 2 -- The width of a TAB is set to 4.
