@@ -1,10 +1,10 @@
-local dap = require("dap")
-local ui = require("dapui")
+local dap = require "dap"
+local ui = require "dapui"
 
 require("dapui").setup()
 require("dap-go").setup()
 
-require("nvim-dap-virtual-text").setup({})
+require("nvim-dap-virtual-text").setup {}
 
 -- Handled by nvim-dap-go
 -- dap.adapters.go = {
@@ -18,11 +18,11 @@ require("nvim-dap-virtual-text").setup({})
 
 vim.keymap.set("n", "<leader>b", dap.toggle_breakpoint)
 vim.keymap.set("n", "<leader>B", function()
-	dap.toggle_breakpoint(vim.fn.input("Breakpoint condition: "))
+	dap.toggle_breakpoint(vim.fn.input "Breakpoint condition: ")
 end)
 
 -- Eval var under cursor
-vim.keymap.set("n", "<space>?", function()
+vim.keymap.set("n", "<leader>?", function()
 	require("dapui").eval(nil, { enter = true })
 end)
 
