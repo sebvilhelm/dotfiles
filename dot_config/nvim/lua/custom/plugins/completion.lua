@@ -50,6 +50,7 @@ return {
 				signature = { enabled = true },
 
 				snippets = {
+					preset = "luasnip",
 					expand = function(snippet)
 						require("luasnip").lsp_expand(snippet)
 					end,
@@ -65,7 +66,7 @@ return {
 				},
 
 				sources = {
-					default = { "lsp", "path", "luasnip", "buffer", "dadbod" },
+					default = { "lsp", "path", "snippets", "buffer", "dadbod" },
 					cmdline = {},
 					providers = {
 						dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
