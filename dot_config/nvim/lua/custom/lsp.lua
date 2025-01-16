@@ -19,7 +19,6 @@ local servers = {
 	graphql = true,
 	html = true,
 	marksman = true,
-	prismals = true,
 	lua_ls = true,
 	taplo = true,
 	gopls = {
@@ -44,13 +43,6 @@ local servers = {
 					functionTypeParameters = true,
 					parameterNames = true,
 					rangeVariableTypes = true,
-				},
-				analyses = {
-					fieldalignment = true,
-					nilness = true,
-					unusedparams = true,
-					unusedwrite = true,
-					useany = true,
 				},
 				usePlaceholders = true,
 				completeUnimported = true,
@@ -172,15 +164,15 @@ local servers_to_install = vim.tbl_filter(function(key)
 end, vim.tbl_keys(servers))
 
 require("mason").setup()
-local ensure_installed = {
-	"stylua",
-	"lua_ls",
-	"delve",
-	-- "tailwind-language-server",
-}
+-- local ensure_installed = {
+-- 	"stylua",
+-- 	"lua_ls",
+-- 	"delve",
+-- 	-- "tailwind-language-server",
+-- }
 
-vim.list_extend(ensure_installed, servers_to_install)
-require("mason-tool-installer").setup { ensure_installed = ensure_installed }
+-- vim.list_extend(ensure_installed, servers_to_install)
+-- require("mason-tool-installer").setup { ensure_installed = ensure_installed }
 
 for name, config in pairs(servers) do
 	if config == true then
