@@ -189,28 +189,15 @@ local disable_semantic_tokens = {
 	lua = true,
 }
 
-local toggle_inlay_hints = function()
-	vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
-end
-
 vim.api.nvim_create_autocmd("LspAttach", {
 	callback = function(args)
 		local bufnr = args.buf
 		local client = assert(vim.lsp.get_client_by_id(args.data.client_id), "must have valid client")
 
-		-- Keymaps
-		vim.keymap.set("n", "gD", vim.lsp.buf.declaration, { buffer = 0 })
-		vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = 0 })
-		vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, { buffer = 0 })
-		vim.keymap.set("n", "K", vim.lsp.buf.hover, { buffer = 0 })
-		vim.keymap.set("n", "gi", vim.lsp.buf.implementation, { buffer = 0 })
-		vim.keymap.set("n", "gr", vim.lsp.buf.references, { buffer = 0 })
-
-		vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = 0 })
-		vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, { buffer = 0 })
-		vim.keymap.set("n", "<leader>sh", vim.lsp.buf.signature_help, { buffer = 0 })
-
 		-- Inlay Hint toggle
+		local toggle_inlay_hints = function()
+			vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled())
+		end
 		vim.keymap.set("n", "<leader>ih", toggle_inlay_hints, { desc = "Toggle inlay hints" })
 		vim.api.nvim_create_user_command("InlayHintToggle", toggle_inlay_hints, {})
 
