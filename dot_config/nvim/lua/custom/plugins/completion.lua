@@ -68,6 +68,9 @@ return {
 				sources = {
 					default = { "lsp", "path", "snippets", "buffer", "dadbod" },
 					cmdline = {},
+					per_filetype = {
+						codecompanion = { "codecompanion" },
+					},
 					providers = {
 						dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
 					},
