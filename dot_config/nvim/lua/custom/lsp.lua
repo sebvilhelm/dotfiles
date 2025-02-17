@@ -3,8 +3,6 @@ require("neodev").setup {}
 local capabilities = nil
 if pcall(require, "cmp_nvim_lsp") then
 	capabilities = require("cmp_nvim_lsp").default_capabilities()
-elseif pcall(require, "blink.cmp") then
-	capabilities = require("blink.cmp").get_lsp_capabilities()
 end
 
 local lspconfig = require "lspconfig"
@@ -178,9 +176,11 @@ for name, config in pairs(servers) do
 	if config == true then
 		config = {}
 	end
-	config = vim.tbl_deep_extend("force", {}, {
-		capabilities = capabilities,
-	}, config)
+	if capabilities ~= nil then
+		config = vim.tbl_deep_extend("force", {}, {
+			capabilities = capabilities,
+		}, config)
+	end
 
 	lspconfig[name].setup(config)
 end

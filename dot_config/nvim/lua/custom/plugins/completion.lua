@@ -22,13 +22,18 @@ return {
 		enabled = true,
 		dependencies = { "L3MON4D3/LuaSnip", version = "2.x" },
 
-		version = "v0.*",
+		version = "*",
 
 		config = function()
 			local blink = require "blink.cmp"
 
 			blink.setup {
-				keymap = { preset = "default" },
+				keymap = {
+					preset = "default",
+					["<Tab>"] = {},
+					["<S-Tab>"] = {},
+					["<C-k>"] = {},
+				},
 
 				appearance = {
 					use_nvim_cmp_as_default = true,
