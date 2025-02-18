@@ -70,9 +70,12 @@ return {
 					end,
 				},
 
+				cmdline = {
+					sources = {},
+				},
+
 				sources = {
 					default = { "lsp", "path", "snippets", "buffer", "dadbod" },
-					cmdline = {},
 					per_filetype = {
 						codecompanion = { "codecompanion" },
 					},
