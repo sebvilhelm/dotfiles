@@ -9,6 +9,7 @@ return {
 				javascriptreact = { "eslint_d", "prettierd" },
 				typescript = { "eslint_d", "prettierd" },
 				typescriptreact = { "eslint_d", "prettierd" },
+				rust = { "rustfmt" },
 				-- markdown = { "prettierd", "prettier" },
 				-- ["markdown.mdx"] = { "prettierd", "prettier" },
 				-- css = { "prettierd", "prettier" },
