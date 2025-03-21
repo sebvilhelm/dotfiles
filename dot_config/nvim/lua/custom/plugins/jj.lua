@@ -7,4 +7,5 @@ return {
 			require("hunk").setup()
 		end,
 	},
+	"rafikdraoui/jj-diffconflicts",
 }

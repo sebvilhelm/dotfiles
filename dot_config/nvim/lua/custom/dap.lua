@@ -2,7 +2,11 @@ local dap = require "dap"
 local ui = require "dapui"
 
 require("dapui").setup()
-require("dap-go").setup()
+require("dap-go").setup {
+	tests = {
+		verbose = true,
+	},
+}
 
 require("nvim-dap-virtual-text").setup {}
 
