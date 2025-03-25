@@ -38,6 +38,18 @@ return {
 						},
 					},
 				},
+				adapters = {
+					deepseek = function()
+						return require("codecompanion.adapters").extend("ollama", {
+							name = "deepseek-r1",
+							schema = {
+								model = {
+									default = "deepseek-r1:7b",
+								},
+							},
+						})
+					end,
+				},
 			}
 		end,
 	},
