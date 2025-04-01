@@ -8,4 +8,9 @@ return {
 		end,
 	},
 	"rafikdraoui/jj-diffconflicts",
+
+	{
+		"lewis6991/gitsigns.nvim",
+		config = true,
+	},
 }
