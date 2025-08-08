@@ -3,13 +3,40 @@ name = "Sebastian Vilhelm Juhl"
 email = "seb.vilhelm@gmail.com"
 
 [signing]
-sign-all = true
+behavior = "own"
 backend = "ssh"
 key = "{{ .github_signing_key }}"
 
 [ui]
-diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
+# diff-editor = ["nvim", "-c", "DiffEditor $left $right $output"]
 default-command = "log"
 
 [ui.diff]
 tool = ["difft", "--color=always", "$left", "$right"]
+
+[merge-tools.diffconflicts]
+program = "nvim"
+merge-args = [
+	"-c",
+	"let g:jj_diffconflicts_marker_length=$marker_length",
+	"-c",
+	"JJDiffConflicts!",
+	"$output",
+	"$base",
+	"$left",
+	"$right",
+]
+merge-tool-edits-conflict-markers = true
+
+[merge-tools.git]
+program = "nvim"
+merge-args = [
+	"-d",
+	"-c",
+	"\"wincmd l\"",
+	"-c\"norm ]c\"",
+	"$left",
+	"$output",
+	"$right",
+]
+merge-tool-edits-conflict-markers = true
