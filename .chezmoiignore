@@ -1,4 +1,4 @@
 **/.DS_Store
 {{- if ne .chezmoi.hostname "work-laptop" }}
-dot_gitconfig_lw.tmpl
+.work
 {{- end }}
