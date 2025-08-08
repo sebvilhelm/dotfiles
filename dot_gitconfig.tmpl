@@ -1,0 +1,49 @@
+[user]
+	name = Sebastian Vilhelm Juhl
+	email = seb.vilhelm@gmail.com
+
+[core]
+	excludesfile = ~/.gitignore_global
+  editor = nvim
+
+[alias]
+	recent = ! git branch --sort=-committerdate --format=\"%(committerdate:relative)%09%(refname:short)\" | head -10
+  smartlog = log --graph --pretty=format:'commit: %C(bold red)%h%Creset %C(red)[%H]%Creset %C(bold magenta)%d %Creset%ndate: %C(bold yellow)%cd %Creset%C(yellow)%cr%Creset%nauthor: %C(bold blue)%an%Creset %C(blue)[%ae]%Creset%n%C(cyan)%s%n%Creset'
+
+[merge]
+  conflictStyle = zdiff3
+  tool = nvim
+
+[mergetool]
+  keepBackup = false
+  prompt = false
+
+[mergetool "nvim"]
+  cmd = "nvim -d -c \"wincmd l\" -c\"norm ]c\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\""
+
+[init]
+  defaultBranch = main
+
+[diff]
+  external = difft
+
+[push]
+  autoSetupRemote = true
+
+[rerere]
+	enabled = true
+
+[credential "https://github.com"]
+	helper = !/usr/local/bin/gh auth git-credential
+
+[credential "https://gist.github.com"]
+	helper = !/usr/local/bin/gh auth git-credential
+
+{{ if eq .chezmoi.hostname "work-laptop" }}
+[includeIf "gitdir/i:{{ .chezmoi.destDir }}/code/lunar/"]
+  path = .gitconfig_lw
+[includeIf "gitdir/i:{{ .chezmoi.destDir }}/go/src/github.com/lunarway/"]
+  path = .gitconfig_lw
+[url "git@github.com:lunarway"]
+	insteadof = https://github.com/lunarway
+{{ end }}
