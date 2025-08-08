@@ -5,3 +5,12 @@ autoPush = true
 
 [data]
 github_signing_key = {{ $github_signing_key | quote }}
+
+[merge]
+    command = "nvim"
+    args = [
+        "-d",
+        {{ printf "%q" "{{ .Destination }}" }},
+        {{ printf "%q" "{{ .Source }}" }},
+        {{ printf "%q" "{{ .Target }}" }},
+    ]
