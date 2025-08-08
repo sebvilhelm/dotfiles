@@ -1,0 +1,7 @@
+{{- $github_signing_key := promptStringOnce . "github_signing_key" "GitHub signing key location" }}
+
+[git]
+autoPush = true
+
+[data]
+github_signing_key = {{ $github_signing_key | quote }}
