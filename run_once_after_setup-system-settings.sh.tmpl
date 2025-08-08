@@ -1,0 +1,3 @@
+{{- if eq .chezmoi.os "darwin" }}
+defaults write -g ApplePressAndHoldEnabled -bool false
+{{ end -}}
