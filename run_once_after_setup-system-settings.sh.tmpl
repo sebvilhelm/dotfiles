@@ -1,5 +1,4 @@
 {{- if eq .chezmoi.os "darwin" }}
-#!/bin/bash
-
+echo "🍏  Setting macOS defaults"
 defaults write -g ApplePressAndHoldEnabled -bool false
 {{ end -}}
