@@ -4,5 +4,3 @@ font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
 macos-option-as-alt = left
-cursor-style = block
-shell-integration-features = no-cursor
