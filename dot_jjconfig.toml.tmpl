@@ -38,3 +38,26 @@ merge-args = [
 	"$right",
 ]
 merge-tool-edits-conflict-markers = true
+
+[fix.tools.gofmt]
+patterns = ["glob:'**/*.go'"]
+command = ["gofmt"]
+
+[fix.tools.rustfmt]
+command = ["rustfmt", "--emit", "stdout", "--edition", "2021"]
+patterns = ["glob:'**/*.rs'"]
+
+[fix.tools.prettier]
+command = ["prettier", "--stdin-filepath", "$path"]
+# run from node_modules:
+#   command = ["node_modules/.bin/prettier", "--stdin-filepath", "$path"]
+patterns = [
+    "glob:'**/*.js'",
+    "glob:'**/*.jsx'",
+    "glob:'**/*.ts'",
+    "glob:'**/*.tsx'",
+    "glob:'**/*.json'",
+    "glob:'**/*.html'",
+    "glob:'**/*.md'",
+    "glob:'**/*.css'",
+    ]
