@@ -3,3 +3,6 @@ _.file = ["local.env", ".env"]
 
 [tools]
 node = "22"
+
+[settings]
+idiomatic_version_file_enable_tools = ["node"]
