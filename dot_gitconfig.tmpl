@@ -39,7 +39,7 @@
 [credential "https://gist.github.com"]
 	helper = !/opt/homebrew/bin/gh auth git-credential
 
-{{ if eq .chezmoi.hostname "work-laptop" }}
+{{ if .workLaptop }}
 [includeIf "gitdir/i:{{ .chezmoi.destDir }}/code/lunar/"]
   path = .gitconfig_lw
 [includeIf "gitdir/i:{{ .chezmoi.destDir }}/go/src/github.com/lunarway/"]
