@@ -33,6 +33,7 @@ opt.shada = { "'10", "<0", "s10", "h" }
 opt.formatoptions:remove "o"
 
 opt.undofile = true
+opt.swapfile = false
 
 -- Show in winbar
 opt.laststatus = 3
@@ -57,7 +58,6 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 -- opt.mouse = "a" -- Enable mouse in all modes
 -- opt.backup = false -- don't make backups before writing
 -- opt.backupcopy = "yes" -- overwrite files to update, instead of renaming + rewriting
--- opt.swapfile = false -- creates a swapfile
 -- opt.conceallevel = 0 -- so that `` is visible in markdown files
 
 -- opt.cursorline = true -- highlight current line
