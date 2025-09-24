@@ -2,10 +2,8 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
-			"folke/neodev.nvim",
-			"williamboman/mason.nvim",
-			"williamboman/mason-lspconfig.nvim",
-			-- "WhoIsSethDaniel/mason-tool-installer.nvim",
+			{ "folke/neodev.nvim", opts = {} },
+			{ "mason-org/mason.nvim", opts = {} },
 			"b0o/SchemaStore.nvim",
 			{ "j-hui/fidget.nvim", opts = {} },
 		},
