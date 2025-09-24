@@ -1,5 +1,5 @@
 return {
-	root_dir = require("lspconfig").util.root_pattern "package.json",
+	root_markers = { "tsconfig.json", "package.json" },
 	single_file_support = false,
 	settings = {
 		typescript = {
