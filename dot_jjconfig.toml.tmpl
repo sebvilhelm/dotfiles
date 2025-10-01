@@ -1,6 +1,28 @@
+## ------------------------------------------------------------------------------------------------
+
+# Schema published automatically on the website. This allows TOML language
+# servers to autocomplete and show documentation for the entries below.
+#
+# I use the prerelease version as my builds on my machines are often from trunk.
+"$schema" = "https://jj-vcs.github.io/jj/prerelease/config-schema.json"
+
+## ------------------------------------------------------------------------------------------------
+
 [user]
 name = "Sebastian Vilhelm Juhl"
 email = "seb.vilhelm@gmail.com"
+
+## ------------------------------------------------------------------------------------------------ 
+## WORK
+
+[[--scope]]
+--when.repositories = ["~/code/lunar"]
+[--scope.user]
+email = "svn@lunar.app"
+[--scope.templates]
+git_push_bookmark = '"svn/push-" ++ change_id.short()'
+
+## ------------------------------------------------------------------------------------------------ 
 
 [signing]
 behavior = "own"
@@ -8,9 +30,13 @@ backend = "ssh"
 key = "{{ .github_signing_key }}"
 backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 
+[git]
+private-commits = 'blacklist()'
+
 [ui]
-default-command = "log"
+default-command = "status"
 diff-formatter = ["difft", "--color=always", "$left", "$right"]
+merge-editor = "mergiraf" # or meld
 
 [merge-tools.diffconflicts]
 program = "nvim"
@@ -39,6 +65,36 @@ merge-args = [
 ]
 merge-tool-edits-conflict-markers = true
 
+[merge-tools.filemerge]
+program = "open"
+edit-args = ["-a", "FileMerge", "-n", "-W", "--args",
+             "-left", "$left", "-right", "$right",
+             "-merge", "$output"]
+merge-args = ["-a", "FileMerge", "-n", "-W", "--args",
+              "-left", "$left", "-right", "$right",
+              "-ancestor", "$base", "-merge", "$output",]
+
+[revsets]
+log = "(trunk()..@):: | (trunk()..@)-"
+
+[revset-aliases]
+# https://gist.github.com/thoughtpolice/8f2fd36ae17cd11b8e7bd93a70e31ad6
+'user(x)' = 'author(x) | committer(x)'
+'mine()' = 'user("seb.vilhelm@gmail.com") | user("svn@lunar.app")'
+
+'wip()' = 'description(glob:"wip:*")'
+'private()' = 'description(glob:"private:*")'
+
+# stack(x, n) is the set of mutable commits reachable from 'x', with 'n'
+# parents. 'n' is often useful to customize the display and return set for
+# certain operations. 'x' can be used to target the set of 'roots' to traverse,
+# e.g. @ is the current stack.
+'stack()' = 'stack(@)'
+'stack(x)' = 'stack(x, 2)'
+'stack(x, n)' = 'ancestors(reachable(x, mutable()), n)'
+
+'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+
 [fix.tools.gofmt]
 patterns = ["glob:'**/*.go'"]
 command = ["gofmt"]
@@ -61,3 +117,25 @@ patterns = [
     "glob:'**/*.md'",
     "glob:'**/*.css'",
     ]
+
+[templates]
+draft_commit_description = '''
+  concat(
+    coalesce(description, default_commit_description, "\n"),
+    surround(
+      "\nJJ: This commit contains the following changes:\n", "",
+      indent("JJ:     ", diff.stat(72)),
+    ),
+    "\nJJ: ignore-rest\n",
+    diff.git(),
+  )
+'''
+
+[aliases]
+tug = 'bookmark move --from "heads(::@ & bookmarks())" --to "closest_pushable(@)"'
+
+pr = ["util", "exec", "--", "bash", "-c", """
+gh pr create --head $(jj log -r 'closest_bookmark(@)' -T 'bookmarks' --no-graph | cut -d ' ' -f 1)
+"""]
+
+
