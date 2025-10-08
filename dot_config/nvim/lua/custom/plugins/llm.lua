@@ -1,6 +1,7 @@
 return {
 	{
 		"olimorris/codecompanion.nvim",
+		enabled = false,
 		dependencies = {
 			"nvim-lua/plenary.nvim",
 			"nvim-treesitter/nvim-treesitter",
@@ -8,14 +9,14 @@ return {
 			{
 				"github/copilot.vim",
 				config = function()
-					vim.cmd [[
+					vim.cmd([[
 					let g:copilot_enabled = 0
-				]]
+				]])
 				end,
 			},
 		},
 		config = function()
-			require("codecompanion").setup {
+			require("codecompanion").setup({
 				strategies = {
 					chat = {
 						slash_commands = {
@@ -38,7 +39,7 @@ return {
 						},
 					},
 				},
-			}
+			})
 		end,
 	},
 }
