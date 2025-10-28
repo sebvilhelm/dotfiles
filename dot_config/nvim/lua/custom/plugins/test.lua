@@ -5,7 +5,7 @@ return {
 			"preservim/vimux",
 		},
 		config = function()
-			vim.cmd "let test#strategy = 'vimux'"
+			vim.cmd("let test#strategy = 'neovim_sticky'")
 
 			vim.keymap.set("n", "<leader>tn", "<cmd>TestNearest<CR>")
 			vim.keymap.set("n", "<leader>tf", "<cmd>TestFile<CR>")

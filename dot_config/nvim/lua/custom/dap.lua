@@ -4,7 +4,7 @@ local ui = require("dapui")
 require("dapui").setup()
 require("dap-go").setup({
 	tests = {
-		verbose = true,
+		verbose = false,
 	},
 	-- dap_configurations = {
 	-- 	{
