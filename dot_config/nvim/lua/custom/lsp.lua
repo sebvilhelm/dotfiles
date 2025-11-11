@@ -13,6 +13,7 @@ vim.lsp.enable("graphql")
 vim.lsp.enable("buf_ls")
 vim.lsp.enable("marksman")
 vim.lsp.enable("tailwindcss")
+vim.lsp.enable("tinymist")
 
 local disable_semantic_tokens = {
 	lua = true,
