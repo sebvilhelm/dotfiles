@@ -1,6 +1,7 @@
 .bin\ --global
 .DS_Store
 .jj/
+.nvim/
 mise.local.toml
 CURSOR.md
 CLAUDE.md
