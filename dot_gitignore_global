@@ -1,10 +1,12 @@
 .bin\ --global
 .DS_Store
 .jj/
-.nvim/
 mise.local.toml
 CURSOR.md
 CLAUDE.md
 AGENT.md
 AGENTS.md
 .graphqlrc.yml
+
+.nvim.lua
+.nvim/

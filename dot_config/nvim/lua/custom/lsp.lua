@@ -4,8 +4,6 @@ vim.lsp.enable("rust_analyzer")
 vim.lsp.enable("jsonls")
 vim.lsp.enable("yamlls")
 vim.lsp.enable("taplo")
--- vim.lsp.enable("ts_ls")
-vim.lsp.enable("tsgo")
 -- vim.lsp.enable("sqlls")
 vim.lsp.enable("cssls")
 vim.lsp.enable("cssmodules_ls")
@@ -15,6 +13,8 @@ vim.lsp.enable("buf_ls")
 vim.lsp.enable("marksman")
 vim.lsp.enable("tailwindcss")
 vim.lsp.enable("tinymist")
+
+vim.lsp.enable("ts_ls")
 
 local disable_semantic_tokens = {
 	lua = true,

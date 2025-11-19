@@ -30,7 +30,7 @@ opt.splitright = true
 opt.shada = { "'10", "<0", "s10", "h" }
 
 -- Don't have `o` add a comment
-opt.formatoptions:remove "o"
+opt.formatoptions:remove("o")
 
 opt.undofile = true
 opt.swapfile = false
@@ -43,9 +43,11 @@ opt.winbar = "%f %m"
 vim.api.nvim_create_autocmd("TextYankPost", {
 	group = vim.api.nvim_create_augroup("user-highlighy-yank", { clear = true }),
 	callback = function()
-		vim.highlight.on_yank { higroup = "Visual", timeout = 200 }
+		vim.highlight.on_yank({ higroup = "Visual", timeout = 200 })
 	end,
 })
+
+vim.opt.exrc = true
 
 ---- Purgatory ----
 
