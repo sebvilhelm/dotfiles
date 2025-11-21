@@ -21,3 +21,5 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({ import = "custom/plugins" }, { change_detection = {
 	notify = false,
 } })
+
+require("custom.jj")
