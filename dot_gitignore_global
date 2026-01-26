@@ -6,7 +6,9 @@ CURSOR.md
 CLAUDE.md
 AGENT.md
 AGENTS.md
-.graphqlrc.yml
+
+PROMPT.md
+TODO.md
 
 .nvim.lua
 .nvim/
