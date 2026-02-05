@@ -65,6 +65,7 @@ return {
 				table.insert(js_linters, name)
 			end
 
+			vim.env.ESLINT_D_PPID = vim.fn.getpid()
 			register_linter("eslint_d", {
 				"eslint.config.js",
 				"eslint.config.cjs",
