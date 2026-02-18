@@ -7,7 +7,7 @@
 Some information about the user's coding environment:
 
 - OS: macOS
-- Terminal: Ghostty
+- Terminal: Ghostty with tmux
 - Text editor: Neovim
 - Shell: zsh
 - Non-standard bash commands available: rg, ast-grep (sg), tokei, gh, jq
