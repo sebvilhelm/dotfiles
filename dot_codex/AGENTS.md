@@ -33,6 +33,7 @@ Some information about the user's coding environment:
 - in scripts, prefer full length flags instead of abbreviations for readability
 - if you're in a repo in ~/code/lunar and want to look at the source for another lunar repo, check if it's already cloned and use the local source. make sure to use jj to pull main on the other repo. if it's not present locally, clone it.
 - Always run tests after changing test code. Generally you should run relevant tests after changing any code.
+  - For Go, always use `go test -run` to run only relevant tests, do not run the entire test suite.
 - Prefer jq over custom python3 scripts when possible for manipulating JSON because jq is allowlisted in your permissions
 
 ### Working with GitHub
