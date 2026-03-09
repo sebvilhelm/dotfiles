@@ -36,21 +36,7 @@ private-commits = 'blacklist()'
 [ui]
 default-command = "status"
 diff-formatter = ["difft", "--color=always", "$left", "$right"]
-merge-editor = "mergiraf" # or meld
-
-[merge-tools.diffconflicts]
-program = "nvim"
-merge-args = [
-	"-c",
-	"let g:jj_diffconflicts_marker_length=$marker_length",
-	"-c",
-	"JJDiffConflicts!",
-	"$output",
-	"$base",
-	"$left",
-	"$right",
-]
-merge-tool-edits-conflict-markers = true
+merge-editor = "mergiraf"
 
 [merge-tools.git]
 program = "nvim"
