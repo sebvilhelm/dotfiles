@@ -3,6 +3,8 @@ font-family = Iosevka Term
 font-feature = -calt
 font-feature = -liga
 font-feature = -dlig
+env = TERM_PROGRAM=ghostty
+env = SNACKS_GHOSTTY=true
 macos-option-as-alt = left
 cursor-style = block
 shell-integration-features = no-cursor
