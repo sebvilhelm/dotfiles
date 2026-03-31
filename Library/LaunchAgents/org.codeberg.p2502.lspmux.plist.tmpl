@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>org.codeberg.p2502.lspmux</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>{{ if eq .chezmoi.arch "amd64" }}/usr/local/bin/lspmux{{ else }}/opt/homebrew/bin/lspmux{{ end }}</string>
+      <string>server</string>
+    </array>
+    <key>EnvironmentVariables</key>
+    <dict>
+      <key>PATH</key>
+      <string>{{ if eq .chezmoi.arch "amd64" }}/usr/local{{ else }}/opt/homebrew{{ end }}/bin:{{ if eq .chezmoi.arch "amd64" }}/usr/local{{ else }}/opt/homebrew{{ end }}/sbin:/usr/bin:/bin:/usr/sbin:/sbin:{{ .chezmoi.homeDir }}/go/bin:{{ .chezmoi.homeDir }}/.cargo/bin</string>
+    </dict>
+    <key>StandardOutPath</key>
+    <string>/tmp/lspmux.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/lspmux.log</string>
+    <key>KeepAlive</key>
+    <true />
+    <key>RunAtLoad</key>
+    <true />
+    <key>LimitLoadToSessionType</key>
+    <array>
+      <string>Aqua</string>
+      <string>Background</string>
+      <string>LoginWindow</string>
+      <string>StandardIO</string>
+      <string>System</string>
+    </array>
+    <key>UserName</key>
+    <string>{{ .chezmoi.username }}</string>
+  </dict>
+</plist>

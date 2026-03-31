@@ -1,4 +1,10 @@
 return {
+	cmd = {
+		"lspmux",
+		"client",
+		"--server-path",
+		"rust-analyzer",
+	},
 	settings = {
 		["rust-analyzer"] = {
 			check = {
