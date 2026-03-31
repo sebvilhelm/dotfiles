@@ -1,4 +1,10 @@
 return {
+	cmd = {
+		"lspmux",
+		"client",
+		"--server-path",
+		"gopls",
+	},
 	settings = {
 		gopls = {
 			gofumpt = true,
