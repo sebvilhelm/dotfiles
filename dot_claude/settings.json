@@ -1,0 +1,37 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(jj status*)",
+      "Bash(jj diff*)",
+      "Bash(jj log*)",
+      "Bash(jj show*)",
+      "Bash(jj file show*)",
+      "Bash(jj new*)",
+      "Bash(jj commit*)",
+      "Bash(jj desc*)",
+      "Bash(jj workspace*)",
+      "Bash(jj bookmark list*)",
+      "Bash(jj op log*)",
+      "Bash(jj root*)",
+      "Bash(jj config*)",
+      "Bash(jj git fetch*)",
+      "Bash(jj next*)",
+      "Bash(jj prev*)",
+      "Bash(jq*)",
+      "Bash(rg*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh pr diff*)",
+      "Bash(gh issue view*)",
+      "Bash(gh issue list*)",
+      "Bash(gh repo view*)",
+      "Bash(gh run view*)",
+      "Bash(gh run list*)",
+      "Bash(gh api*)",
+      "Bash(sg*)",
+      "Bash(ast-grep*)",
+      "Bash(tokei*)"
+    ]
+  }
+}
