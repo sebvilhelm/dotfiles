@@ -1,6 +1,14 @@
 {
 	"$schema": "https://json.schemastore.org/claude-code-settings.json",
 	"includeGitInstructions": false,
+	"env": {
+		"CLAUDE_CODE_DISABLE_TERMINAL_TITLE": "1"
+	},
+	"attribution": {
+		"commit": "",
+		"pr": ""
+	},
+	"model": "opus[1m]",
 	"permissions": {
 		"defaultMode": "acceptEdits",
 		"allow": [
@@ -38,6 +46,8 @@
 			"Bash(tmux capture-pane:*)",
 			"Bash(man:*)",
 			"Bash(tldr:*)",
+			"Bash(go build:*)",
+			"Bash(go test:*)",
 			"WebSearch",
 			"WebFetch(domain:github.com)",
 			"WebFetch(domain:raw.githubusercontent.com)",
@@ -63,5 +73,9 @@
 		"rust-analyzer-lsp@claude-plugins-official": false,
 		"gopls-lsp@claude-plugins-official": true
 	},
-	"effortLevel": "high"
+	"effortLevel": "high",
+	"statusLine": {
+		"type": "command",
+		"command": "sh ~/.claude/statusline-command.sh"
+	}
 }

@@ -2,6 +2,7 @@
 .DS_Store
 .jj/
 mise.local.toml
+.claude
 CURSOR.md
 CLAUDE.md
 AGENT.md
