@@ -30,6 +30,11 @@
 			"Bash(jj prev*)",
 			"Bash(jq*)",
 			"Bash(rg*)",
+			"Bash(grep*)",
+			"Bash(fd*)",
+			"Bash(find*)",
+			"Bash(ls:*)",
+			"Bash(tree:*)",
 			"Bash(gh pr view*)",
 			"Bash(gh pr list*)",
 			"Bash(gh pr checks*)",
@@ -48,6 +53,7 @@
 			"Bash(tldr:*)",
 			"Bash(go build:*)",
 			"Bash(go test:*)",
+			"Bash(go doc:*)",
 			"WebSearch",
 			"WebFetch(domain:github.com)",
 			"WebFetch(domain:raw.githubusercontent.com)",
@@ -65,6 +71,20 @@
 		"additionalDirectories": [
 			"../lunar",
 			"~/code/lunar"
+		]
+	},
+	"hooks": {
+		"Notification": [
+			{
+				"matcher": "",
+				"hooks": [
+					{
+						"type": "command",
+						"command": "afplay /System/Library/Sounds/Morse.aiff",
+						"async": true
+					}
+				]
+			}
 		]
 	},
 	"enabledPlugins": {

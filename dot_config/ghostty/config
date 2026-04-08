@@ -8,3 +8,4 @@ env = SNACKS_GHOSTTY=true
 macos-option-as-alt = left
 cursor-style = block
 shell-integration-features = no-cursor
+keybind = alt+backspace=text:\x1b\x7f
