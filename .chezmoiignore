@@ -1,6 +1,7 @@
 **/.DS_Store
 lazy-lock.json
 tmp
+pi-agent-settings.json
 {{- if ne .chezmoi.hostname "work-laptop" }}
 .work
 {{- end }}

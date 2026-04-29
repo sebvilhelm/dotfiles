@@ -1,0 +1,15 @@
+{
+  "lastChangelogVersion": "0.70.6",
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-5.4",
+  "defaultThinkingLevel": "high",
+  "packages": [
+    "npm:pi-answer",
+    "npm:pi-show-image",
+    "npm:pi-tmux-focus-cursor"
+  ],
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time",
+  "enableInstallTelemetry": false,
+  "hideThinkingBlock": false
+}
