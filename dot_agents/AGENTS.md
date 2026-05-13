@@ -40,30 +40,14 @@ Some information about the user's coding environment:
 - The user may squash your work into the previous commit while you're working. This is normal — check `@-` (e.g., `jj diff -r @-`) if you need to confirm your changes landed.
 - `--ignore-immutable` may be needed when abandoning divergent commits from other authors, e.g., after rebasing on their branch and force pushing
 
-### Go projects
-
-- Use the latest available syntax and std libs: `go fix` can upgrade syntax, but restore any changes unrelated to the current task.
-- Prefer local mapper functions over inline mapping or global mapper functions, unless mapping is significantly more complex than mapping primitive types to other struct fields or slices.
-- Use struct methods for collection helpers, e.g. `type BankAccount struct` can have a `Transactions` struct field and `Deposits()` and `Withdrawals()` methods.
-- use `testify/assert` and `testify/require` for assertions.
-
-
-### TypeScript projects
-
-- Read online docs for libraries to understand how to use them
-- When working on types, work hard to avoid casting or `any`. Do it right.
-
 ### Misc. coding rules
 
 - Code comments should be more about why than what
-- After making changes, ALWAYS run linters, formatters, and typecheckers that are relevant to the changed files..
-  - In TypeScript and JavaScript projects: Check package.json for commands
-  - In Go projects, use `go fmt`  on changed files, and `go build ./...` to verify
-  - If there aren't any tools available for the language, don't do anything and let me know.
+- After making changes, ALWAYS run linters, formatters, typecheckers, and relevant tests for the changed files.
+  - If there aren't any suitable tools available, say so.
 - in scripts, prefer full length flags instead of abbreviations for readability
 - if you're in a repo in ~/code/lunar and want to look at the source for another lunar repo, check if it's already cloned and use the local source. make sure to use jj to pull main on the other repo. if it's not present locally, clone it. You can also use `src` to search in the organisation Sourcegraph instance.
 - Always run tests after changing test code. Generally you should run relevant tests after changing any code.
-  - For Go, always use `go test -run` to run only relevant tests, do not run the entire test suite.
 - Prefer jq over custom python3 scripts when possible for manipulating JSON because jq is allowlisted in your permissions
 - You can add temp files in a `tmp` directory local to the project. It is globally ignored by VCS. If it doesn't exist you can create it. Prefix files with the date in the format `YYYY-MM-DD`
 
@@ -72,34 +56,4 @@ Some information about the user's coding environment:
 - When given a GitHub link, instead of fetching the URL directly, use the `gh` CLI to fetch the same data in plaintext if possible
 - When you're in running in the repo under discussion, prefer local commands for looking at history over GitHub API calls that would fetch the same data.
 
-### Batch data processing
-
-When a task involves fetching and processing data for many items (e.g.,
-analyzing many PRs, processing a list of API resources), do not fan out to
-the full list immediately. First, work through the pipeline on a single item
-end-to-end: figure out which commands and API calls to run, what fields matter,
-how to parse and thread the data together, and confirm the output is useful.
-Refine the approach on one or a few cases — try different jq expressions, check
-whether the data model matches expectations, and verify the extraction logic
-produces what's needed. Only after the procedure is solid on one item should you
-scale up, and even then, prefer starting with a small batch before processing
-everything in parallel. Consider saving the procedure in a skill for future use.
-
-### Analysis and planning
-
-When asked to do analysis and planning for a possible feature, make sure to
-work in a way that is easily resumable by another session. Start a report in a
-markdown file immediately, include the prompt or goal at the top, and fill it
-in as you go instead of at the end. Create separate markdown files for analysis
-and planning, where planning is the shorter and more focused doc developers
-are likely to read, and the analysis is more like a reference backing up the
-plan and making it easy for agents to resume work on the plan. Be thorough and
-consider alternative approaches explicitly, but don't give too much space to
-alternatives that are obviously implausible for whatever reason. When asked to
-review or improve a design doc, engage with the design, not just the prose.
-The point is to produce a solid design and make the case for it.
-
-Analysis markdown files should go in `tmp/notes` relative to repo root. That
-directory is gitignored globally. Give the file a descriptive name and start it
-with a YYYY-MM-DD date.
 
