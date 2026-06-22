@@ -50,6 +50,7 @@ Some information about the user's coding environment:
 - Always run tests after changing test code. Generally you should run relevant tests after changing any code.
 - Prefer jq over custom python3 scripts when possible for manipulating JSON because jq is allowlisted in your permissions
 - You can add temp files in a `tmp` directory local to the project. It is globally ignored by VCS. If it doesn't exist you can create it. Prefix files with the date in the format `YYYY-MM-DD`
+- Production data can never be committed, not in tests, comments or commit descriptions. Any PII used for debugging needs to be anonymized if used for test cases, comments or in commit descriptions.
 
 ### Working with GitHub
 
