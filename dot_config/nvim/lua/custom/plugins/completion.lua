@@ -1,5 +1,4 @@
 return {
-
 	{
 		"saghen/blink.cmp",
 		enabled = true,
@@ -8,9 +7,9 @@ return {
 		version = "*",
 
 		config = function()
-			local blink = require "blink.cmp"
+			local blink = require("blink.cmp")
 
-			blink.setup {
+			blink.setup({
 				keymap = {
 					preset = "default",
 					["<Tab>"] = {},
@@ -66,7 +65,7 @@ return {
 						dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
 					},
 				},
-			}
+			})
 		end,
 	},
 }
