@@ -1,0 +1,72 @@
+export VISUAL=nvim
+export EDITOR=$VISUAL
+
+GOPATH=~/go
+GOBIN="$GOPATH/bin"
+PATH="$GOBIN:$PATH"
+
+# Tree
+function t() {
+  # Defaults to 3 levels deep, do more with `t 5` or `t 1`
+  # pass additional args after
+  tree -I '.git|node_modules|bower_components|.DS_Store' --dirsfirst --filelimit 15 -L ${1:-3} -aC $2
+}
+
+function chtsh() {
+  curl https://cheat.sh/$@
+}
+
+function take() {
+  mkdir -p $@ && cd ${@:$#}
+}
+
+
+
+export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/bin:$PATH"
+
+# pnpm
+export PNPM_HOME="/Users/svn/Library/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+# pnpm end
+
+
+# Load Zimfw
+ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
+# Download zimfw plugin manager if missing.
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  command curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
+fi
+# Install missing modules and update ${ZIM_HOME}/init.zsh if missing or outdated.
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZIM_CONFIG_FILE:-${ZDOTDIR:-${HOME}}/.zimrc} ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init
+fi
+# Initialize completion early so modules can call compdef during init.
+autoload -Uz compinit
+compinit -C
+
+# Initialize modules.
+source ${ZIM_HOME}/init.zsh
+
+if [ -f ~/lunar.zsh ]; then
+  source ~/lunar.zsh
+fi
+
+# Load Completions
+autoload -Uz compinit
+for dump in ~/.zcompdump(N.mh+168); do #Only do it once a week. No slow terminal for me please
+  compinit
+done
+compinit -C
+
+eval "$(zoxide init zsh)"
+eval "$(atuin init zsh)"
+eval "$(~/.local/bin/mise activate zsh)"
+eval "$(starship init zsh)"
+
+# https://github.com/oxidecomputer/skepsis
+alias sk="npx --prefix ~/code/skepsis tsx ~/code/skepsis/cli.ts"
