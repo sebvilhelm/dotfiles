@@ -40,13 +40,20 @@ Some information about the user's coding environment:
 - The user may squash your work into the previous commit while you're working. This is normal — check `@-` (e.g., `jj diff -r @-`) if you need to confirm your changes landed.
 - `--ignore-immutable` may be needed when abandoning divergent commits from other authors, e.g., after rebasing on their branch and force pushing
 
+### Lunar (work)
+
+- When working in a repo in ~code/lunar, you are working on a lunar project.
+- Do not use `shuttle run test` to run tests, run the tests directly.
+    - If tests fail because of missing db or rabbitmq, use `shuttle run local_up` to start external services.
+    - If tests fail because of missing env vars, use `shuttle run generate_dotenv` to make `local.env` file with local variables.
+- if you're in a repo in ~/code/lunar and want to look at the source for another lunar repo, check if it's already cloned and use the local source. make sure to use jj to pull main on the other repo. if it's not present locally, clone it. You can also use `src` to search in the organisation Sourcegraph instance.
+
 ### Misc. coding rules
 
 - Code comments should be more about why than what
 - After making changes, ALWAYS run linters, formatters, typecheckers, and relevant tests for the changed files.
   - If there aren't any suitable tools available, say so.
 - in scripts, prefer full length flags instead of abbreviations for readability
-- if you're in a repo in ~/code/lunar and want to look at the source for another lunar repo, check if it's already cloned and use the local source. make sure to use jj to pull main on the other repo. if it's not present locally, clone it. You can also use `src` to search in the organisation Sourcegraph instance.
 - Always run tests after changing test code. Generally you should run relevant tests after changing any code.
 - Prefer jq over custom python3 scripts when possible for manipulating JSON because jq is allowlisted in your permissions
 - You can add temp files in a `tmp` directory local to the project. It is globally ignored by VCS. If it doesn't exist you can create it. Prefix files with the date in the format `YYYY-MM-DD`
