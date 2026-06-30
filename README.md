@@ -38,7 +38,7 @@ chezmoi apply --init
 
 ## Machine-specific notes
 
-The `.work/` overlay is only applied when `chezmoi.hostname` is `work-laptop`. If this machine should receive those files, make sure the hostname matches before the first apply.
+Work-specific files are only applied when `work_laptop` is true in chezmoi data.
 
 ## After the first apply
 
@@ -57,6 +57,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 ```
 
 Then start tmux and press `Ctrl-a I` once to install plugins. The tmux prefix in this config is `Ctrl-a`.
+
+If you want a local Neovim build, clone `neovim/neovim`, install its build dependencies, and build it with `make CMAKE_BUILD_TYPE=Release`.
 
 Open `nvim` once to let `lazy.nvim` clone and install plugins.
 

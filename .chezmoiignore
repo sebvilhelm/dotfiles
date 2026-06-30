@@ -2,6 +2,6 @@
 lazy-lock.json
 tmp
 pi-agent-settings.json
-{{- if ne .chezmoi.hostname "work-laptop" }}
-.work
+{{- if not .work_laptop }}
+dot_gitconfig_lw.tmpl
 {{- end }}
