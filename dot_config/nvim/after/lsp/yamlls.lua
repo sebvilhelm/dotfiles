@@ -1,3 +1,20 @@
+local uv = vim.uv or vim.loop
+
+local lw_path = vim.env.LW_PATH
+local extra = {}
+
+if lw_path and lw_path ~= "" then
+	local shuttle_schema_path = lw_path .. "/lw-shuttle-go-plan/.schemastore/schema.json"
+	if uv.fs_stat(shuttle_schema_path) then
+		extra[#extra + 1] = {
+			description = "Shuttle go plan",
+			fileMatch = "shuttle.yaml",
+			name = "shuttle.yaml",
+			url = vim.uri_from_fname(shuttle_schema_path),
+		}
+	end
+end
+
 return {
 	settings = {
 		yaml = {
@@ -7,14 +24,9 @@ return {
 				enable = false,
 				url = "",
 			},
-			schemas = require("schemastore").yaml.schemas {
-				extra = {
-					description = "Shuttle go plan",
-					fileMatch = "shuttle.yaml",
-					name = "shuttle.yaml",
-					url = "file:///Users/svn/code/lunar/lw-shuttle-go-plan/.schemastore/schema.json",
-				},
-			},
+			schemas = require("schemastore").yaml.schemas({
+				extra = extra,
+			}),
 		},
 	},
 }
