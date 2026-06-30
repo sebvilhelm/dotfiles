@@ -114,28 +114,17 @@ function buildDocument(
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="color-scheme" content="light dark">
+    <meta name="color-scheme" content="light">
     <title>${escapeHtml(title)}</title>
     <style>
       :root {
-        color-scheme: light dark;
+        color-scheme: light;
         --bg: #ffffff;
         --fg: #1f2328;
         --muted: #59636e;
         --border: #d0d7de;
         --code-bg: #f6f8fa;
         --link: #0969da;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        :root {
-          --bg: #0d1117;
-          --fg: #e6edf3;
-          --muted: #9198a1;
-          --border: #30363d;
-          --code-bg: #161b22;
-          --link: #58a6ff;
-        }
       }
 
       * {
