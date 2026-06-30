@@ -1,10 +1,16 @@
 {{- $github_signing_key := promptStringOnce . "github_signing_key" "GitHub signing key location" }}
+{{- $work_laptop := promptBoolOnce . "work_laptop" "Apply work-specific settings on this machine?" false }}
 
 [git]
 autoPush = true
 
 [data]
 github_signing_key = {{ $github_signing_key | quote }}
+work_laptop = {{ $work_laptop }}
+{{- if $work_laptop }}
+lunar_name = {{ promptStringOnce . "lunar_name" "Work Git author name" | quote }}
+lunar_email = {{ promptStringOnce . "lunar_email" "Work Git author email" | quote }}
+{{- end }}
 
 [merge]
     command = "nvim"

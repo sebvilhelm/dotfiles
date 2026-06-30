@@ -65,7 +65,9 @@ compinit -C
 
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
-eval "$(~/.local/bin/mise activate zsh)"
+if command -v mise >/dev/null 2>&1; then
+  eval "$(mise activate zsh)"
+fi
 eval "$(starship init zsh)"
 
 # https://github.com/oxidecomputer/skepsis

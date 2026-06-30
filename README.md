@@ -28,7 +28,7 @@ Pull and apply the dotfiles:
 chezmoi init --apply https://github.com/sebvilhelm/dotfiles.git
 ```
 
-The first run generates the chezmoi config from `.chezmoi.toml.tmpl` and prompts for `github_signing_key`. Provide the value you want used by the included git/jj signing config.
+The first run generates the chezmoi config from `.chezmoi.toml.tmpl` and prompts for `github_signing_key` and whether the machine should apply work-specific settings. On work machines it also prompts for `lunar_name` and `lunar_email`. Provide the values you want used by the included git/jj signing and work git config.
 
 If the template data changes later, regenerate the config and re-apply with:
 
@@ -42,7 +42,7 @@ Work-specific files are only applied when `work_laptop` is true in chezmoi data.
 
 ## After the first apply
 
-If you use the included git/jj signing setup, install the 1Password app too. The configs call `/Applications/1Password.app/Contents/MacOS/op-ssh-sign`.
+If you use the included git/jj signing setup, sign in to the 1Password app after the Brew bundle installs it. The configs call `/Applications/1Password.app/Contents/MacOS/op-ssh-sign`.
 
 The git config also uses `gh auth git-credential`, so authenticate GitHub once:
 
@@ -62,10 +62,11 @@ If you want a local Neovim build, clone `neovim/neovim`, install its build depen
 
 Open `nvim` once to let `lazy.nvim` clone and install plugins.
 
-A couple of local extras are referenced but not managed here. Add them manually if you use them:
+Firefox settings are applied via a managed `user.js` in the active Firefox profile, and selected extensions are copied into that profile's `extensions/` directory. Launch Firefox once so it creates a profile, quit Firefox, run `chezmoi apply` again, and then launch Firefox again.
+
+One local extra is still referenced but not managed here. Add it manually if you use it:
 
 - `~/lunar.zsh`
-- `~/.claude/statusline-command.sh`
 
 Finally, start a fresh shell:
 

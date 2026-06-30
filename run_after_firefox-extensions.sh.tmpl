@@ -1,0 +1,138 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -euo pipefail
+
+firefox_base="${FIREFOX_BASE_DIR:-$HOME/Library/Application Support/Firefox}"
+profiles_dir="$firefox_base/Profiles"
+profiles_ini="$firefox_base/profiles.ini"
+installs_ini="$firefox_base/installs.ini"
+local_source_dir="${FIREFOX_EXTENSION_SOURCE_DIR:-}"
+
+if [ ! -d "$profiles_dir" ] || [ ! -f "$profiles_ini" ]; then
+  exit 0
+fi
+
+find_profile_from_installs() {
+  local relative_path
+  local profile_dir
+
+  [ -f "$installs_ini" ] || return 1
+
+  while IFS= read -r relative_path; do
+    [ -n "$relative_path" ] || continue
+    profile_dir="$firefox_base/$relative_path"
+    if [ -d "$profile_dir" ] && [[ "$relative_path" == *default-release* ]]; then
+      printf '%s\n' "$profile_dir"
+      return 0
+    fi
+  done < <(awk -F '=' '/^Default=/{ print $2 }' "$installs_ini")
+
+  while IFS= read -r relative_path; do
+    [ -n "$relative_path" ] || continue
+    profile_dir="$firefox_base/$relative_path"
+    if [ -d "$profile_dir" ]; then
+      printf '%s\n' "$profile_dir"
+      return 0
+    fi
+  done < <(awk -F '=' '/^Default=/{ print $2 }' "$installs_ini")
+
+  return 1
+}
+
+find_profile_from_profiles_ini() {
+  awk -F '=' -v base="$firefox_base" '
+    /^\[Profile/ {
+      in_profile = 1
+      path = ""
+      is_default = 0
+      next
+    }
+
+    /^\[/ {
+      in_profile = 0
+    }
+
+    in_profile && $1 == "Path" {
+      path = $2
+    }
+
+    in_profile && $1 == "Default" && $2 == "1" {
+      is_default = 1
+    }
+
+    in_profile && path != "" && is_default {
+      print base "/" path
+      exit 0
+    }
+  ' "$profiles_ini"
+}
+
+find_latest_default_release_profile() {
+  find "$profiles_dir" -maxdepth 1 -type d -name '*.default-release*' -print |
+    while IFS= read -r profile_dir; do
+      [ -d "$profile_dir" ] || continue
+      stat -f '%m %N' "$profile_dir"
+    done |
+    sort -nr |
+    awk 'NR == 1 { $1 = ""; sub(/^ /, ""); print; exit }'
+}
+
+profile_dir="$(find_profile_from_installs || true)"
+if [ -z "$profile_dir" ]; then
+  profile_dir="$(find_profile_from_profiles_ini || true)"
+fi
+if [ -z "$profile_dir" ]; then
+  profile_dir="$(find_latest_default_release_profile || true)"
+fi
+
+if [ -z "$profile_dir" ] || [ ! -d "$profile_dir" ]; then
+  exit 0
+fi
+
+extensions_dir="$profile_dir/extensions"
+mkdir -p "$extensions_dir"
+
+tmp_dir="$(mktemp -d)"
+trap 'rm -rf "$tmp_dir"' EXIT
+
+extension_ids=(
+  '@react-devtools'
+  'uBlock0@raymondhill.net'
+  '{d634138d-c276-4fc8-924b-40a0ea21d284}'
+)
+
+install_extension() {
+  local extension_id="$1"
+  local target_file="$extensions_dir/$extension_id.xpi"
+  local source_file
+  local download_url
+  local temp_file
+
+  if [ -f "$target_file" ]; then
+    return 0
+  fi
+
+  if [ -n "$local_source_dir" ]; then
+    source_file="$local_source_dir/$extension_id.xpi"
+    if [ -f "$source_file" ]; then
+      cp "$source_file" "$target_file"
+      return 0
+    fi
+  fi
+
+  download_url="https://addons.mozilla.org/firefox/downloads/latest/$extension_id/latest.xpi"
+  temp_file="$tmp_dir/$extension_id.xpi"
+
+  if ! curl --fail --location --silent --show-error --output "$temp_file" "$download_url"; then
+    printf 'warning: failed to download Firefox extension %s\n' "$extension_id" >&2
+    return 0
+  fi
+
+  mv "$temp_file" "$target_file"
+}
+
+for extension_id in "${extension_ids[@]}"; do
+  install_extension "$extension_id"
+done
+{{ end -}}

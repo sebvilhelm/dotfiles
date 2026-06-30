@@ -1,0 +1,136 @@
+{{- if eq .chezmoi.os "darwin" -}}
+#!/bin/bash
+
+set -euo pipefail
+
+firefox_base="${FIREFOX_BASE_DIR:-$HOME/Library/Application Support/Firefox}"
+profiles_dir="$firefox_base/Profiles"
+profiles_ini="$firefox_base/profiles.ini"
+installs_ini="$firefox_base/installs.ini"
+
+if [ ! -d "$profiles_dir" ] || [ ! -f "$profiles_ini" ]; then
+  exit 0
+fi
+
+find_profile_from_installs() {
+  local relative_path
+  local profile_dir
+
+  [ -f "$installs_ini" ] || return 1
+
+  while IFS= read -r relative_path; do
+    [ -n "$relative_path" ] || continue
+    profile_dir="$firefox_base/$relative_path"
+    if [ -d "$profile_dir" ] && [[ "$relative_path" == *default-release* ]]; then
+      printf '%s\n' "$profile_dir"
+      return 0
+    fi
+  done < <(awk -F '=' '/^Default=/{ print $2 }' "$installs_ini")
+
+  while IFS= read -r relative_path; do
+    [ -n "$relative_path" ] || continue
+    profile_dir="$firefox_base/$relative_path"
+    if [ -d "$profile_dir" ]; then
+      printf '%s\n' "$profile_dir"
+      return 0
+    fi
+  done < <(awk -F '=' '/^Default=/{ print $2 }' "$installs_ini")
+
+  return 1
+}
+
+find_profile_from_profiles_ini() {
+  awk -F '=' -v base="$firefox_base" '
+    /^\[Profile/ {
+      in_profile = 1
+      path = ""
+      is_default = 0
+      next
+    }
+
+    /^\[/ {
+      in_profile = 0
+    }
+
+    in_profile && $1 == "Path" {
+      path = $2
+    }
+
+    in_profile && $1 == "Default" && $2 == "1" {
+      is_default = 1
+    }
+
+    in_profile && path != "" && is_default {
+      print base "/" path
+      exit 0
+    }
+  ' "$profiles_ini"
+}
+
+find_latest_default_release_profile() {
+  find "$profiles_dir" -maxdepth 1 -type d -name '*.default-release*' -print |
+    while IFS= read -r profile_dir; do
+      [ -d "$profile_dir" ] || continue
+      stat -f '%m %N' "$profile_dir"
+    done |
+    sort -nr |
+    awk 'NR == 1 { $1 = ""; sub(/^ /, ""); print; exit }'
+}
+
+profile_dir="$(find_profile_from_installs || true)"
+if [ -z "$profile_dir" ]; then
+  profile_dir="$(find_profile_from_profiles_ini || true)"
+fi
+if [ -z "$profile_dir" ]; then
+  profile_dir="$(find_latest_default_release_profile || true)"
+fi
+
+if [ -z "$profile_dir" ] || [ ! -d "$profile_dir" ]; then
+  exit 0
+fi
+
+tmp_file="$(mktemp)"
+trap 'rm -f "$tmp_file"' EXIT
+
+cat > "$tmp_file" <<'EOF'
+// Managed by chezmoi.
+// Firefox reads user.js at startup and copies these preferences into prefs.js.
+
+user_pref("browser.disableResetPrompt", true);
+user_pref("browser.formfill.enable", false);
+user_pref("browser.startup.page", 3);
+user_pref("browser.tabs.groups.smart.userEnabled", false);
+user_pref("browser.translations.neverTranslateLanguages", "da");
+user_pref("devtools.debugger.map-scopes-enabled", true);
+user_pref("devtools.debugger.pause-on-caught-exceptions", false);
+user_pref("devtools.debugger.pause-on-debugger-statement", false);
+user_pref("devtools.debugger.remote-enabled", false);
+user_pref("devtools.dom.enabled", true);
+user_pref("devtools.netmonitor.filters", "[\"xhr\"]");
+user_pref("devtools.netmonitor.msg.visibleColumns", "[\"data\",\"time\"]");
+user_pref("devtools.netmonitor.persistlog", true);
+user_pref("devtools.toolbox.host", "right");
+user_pref("devtools.toolbox.selectedTool", "netmonitor");
+user_pref("devtools.toolbox.splitconsole.open", true);
+user_pref("devtools.webconsole.filter.netxhr", true);
+user_pref("extensions.formautofill.creditCards.enabled", false);
+user_pref("findbar.entireword", true);
+user_pref("network.dns.disablePrefetch", true);
+user_pref("network.http.speculative-parallel-limit", 0);
+user_pref("network.prefetch-next", false);
+user_pref("privacy.clearOnShutdown_v2.formdata", true);
+user_pref("privacy.globalprivacycontrol.enabled", true);
+user_pref("privacy.history.custom", true);
+user_pref("sidebar.main.tools", "aichat,syncedtabs,history,bookmarks");
+user_pref("sidebar.revamp", true);
+user_pref("sidebar.verticalTabs", true);
+user_pref("signon.rememberSignons", false);
+EOF
+
+target_file="$profile_dir/user.js"
+if [ -f "$target_file" ] && cmp -s "$tmp_file" "$target_file"; then
+  exit 0
+fi
+
+mv "$tmp_file" "$target_file"
+{{ end -}}
