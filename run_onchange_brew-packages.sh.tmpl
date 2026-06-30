@@ -2,6 +2,7 @@
 #!/bin/bash
 
 brew bundle --file=/dev/stdin <<EOF
+tap "cirruslabs/cli"
 brew "atuin"
 brew "bat"
 brew "curl"
@@ -21,7 +22,7 @@ brew "mise"
 brew "ripgrep"
 brew "sesh"
 brew "starship"
-brew "tart", tap: "cirruslabs/cli"
+brew "cirruslabs/cli/tart"
 brew "tmux"
 brew "tree"
 brew "typst"
