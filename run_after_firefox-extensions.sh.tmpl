@@ -124,7 +124,7 @@ install_extension() {
   download_url="https://addons.mozilla.org/firefox/downloads/latest/$extension_id/latest.xpi"
   temp_file="$tmp_dir/$extension_id.xpi"
 
-  if ! curl --fail --location --silent --show-error --output "$temp_file" "$download_url"; then
+  if ! curl --globoff --fail --location --silent --show-error --output "$temp_file" "$download_url"; then
     printf 'warning: failed to download Firefox extension %s\n' "$extension_id" >&2
     return 0
   fi
