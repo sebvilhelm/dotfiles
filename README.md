@@ -62,7 +62,7 @@ If you want a local Neovim build, clone `neovim/neovim`, install its build depen
 
 Open `nvim` once to let `lazy.nvim` clone and install plugins.
 
-Firefox settings are applied via a managed `user.js` in the active Firefox profile, and selected extensions are copied into that profile's `extensions/` directory. Launch Firefox once so it creates a profile, quit Firefox, run `chezmoi apply` again, and then launch Firefox again.
+Firefox settings are applied via a managed `user.js` in `~/Library/Application Support/Firefox/Profiles/managed.default-release`, and selected extensions are copied into that profile's `extensions/` directory. `chezmoi apply` creates or migrates the default profile and updates Firefox's profile registry, so there is no first-launch bootstrap step. Quit Firefox before applying.
 
 One local extra is still referenced but not managed here. Add it manually if you use it:
 

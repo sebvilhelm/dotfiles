@@ -7,10 +7,15 @@ firefox_base="${FIREFOX_BASE_DIR:-$HOME/Library/Application Support/Firefox}"
 profiles_dir="$firefox_base/Profiles"
 profiles_ini="$firefox_base/profiles.ini"
 installs_ini="$firefox_base/installs.ini"
+managed_profile_name="${FIREFOX_PROFILE_NAME:-default-release}"
+managed_profile_relative_path="${FIREFOX_PROFILE_RELATIVE_PATH:-Profiles/managed.default-release}"
+managed_profile_dir="$firefox_base/$managed_profile_relative_path"
 
-if [ ! -d "$profiles_dir" ] || [ ! -f "$profiles_ini" ]; then
-  exit 0
-fi
+is_directory_empty() {
+  local dir="$1"
+
+  [ ! -d "$dir" ] || [ -z "$(find "$dir" -mindepth 1 -maxdepth 1 -print -quit 2>/dev/null)" ]
+}
 
 find_profile_from_installs() {
   local relative_path
@@ -40,6 +45,8 @@ find_profile_from_installs() {
 }
 
 find_profile_from_profiles_ini() {
+  [ -f "$profiles_ini" ] || return 1
+
   awk -F '=' -v base="$firefox_base" '
     /^\[Profile/ {
       in_profile = 1
@@ -68,6 +75,8 @@ find_profile_from_profiles_ini() {
 }
 
 find_latest_default_release_profile() {
+  [ -d "$profiles_dir" ] || return 1
+
   find "$profiles_dir" -maxdepth 1 -type d -name '*.default-release*' -print |
     while IFS= read -r profile_dir; do
       [ -d "$profile_dir" ] || continue
@@ -77,17 +86,279 @@ find_latest_default_release_profile() {
     awk 'NR == 1 { $1 = ""; sub(/^ /, ""); print; exit }'
 }
 
-profile_dir="$(find_profile_from_installs || true)"
-if [ -z "$profile_dir" ]; then
+find_existing_profile_dir() {
+  local profile_dir
+
+  profile_dir="$(find_profile_from_installs || true)"
+  if [ -n "$profile_dir" ]; then
+    printf '%s\n' "$profile_dir"
+    return 0
+  fi
+
   profile_dir="$(find_profile_from_profiles_ini || true)"
-fi
-if [ -z "$profile_dir" ]; then
+  if [ -n "$profile_dir" ]; then
+    printf '%s\n' "$profile_dir"
+    return 0
+  fi
+
   profile_dir="$(find_latest_default_release_profile || true)"
+  if [ -n "$profile_dir" ]; then
+    printf '%s\n' "$profile_dir"
+    return 0
+  fi
+
+  return 1
+}
+
+write_profiles_ini() {
+  local source_relative_path="$1"
+  local tmp_file
+
+  if [ ! -f "$profiles_ini" ]; then
+    cat > "$profiles_ini" <<EOF
+[Profile0]
+Name=$managed_profile_name
+IsRelative=1
+Path=$managed_profile_relative_path
+Default=1
+
+[General]
+StartWithLastProfile=1
+Version=2
+EOF
+    return 0
+  fi
+
+  tmp_file="$(mktemp)"
+
+  awk \
+    -v managed_name="$managed_profile_name" \
+    -v managed_path="$managed_profile_relative_path" \
+    -v source_path="$source_relative_path" \
+    '
+    function reset_section() {
+      section = ""
+      section_path = ""
+      section_name = ""
+      section_profile_index = -1
+      line_count = 0
+      delete section_lines
+    }
+
+    function flush_section(    i, is_profile, is_general, is_install, is_managed, default_value) {
+      if (section == "") {
+        return
+      }
+
+      is_profile = section ~ /^\[Profile[0-9]+\]$/
+      is_general = section == "[General]"
+      is_install = section ~ /^\[Install[^]]+\]$/
+
+      if (is_profile) {
+        if (section_profile_index > max_profile_index) {
+          max_profile_index = section_profile_index
+        }
+
+        is_managed = section_path == managed_path || (source_path != "" && section_path == source_path) || (!managed_written && section_name == managed_name)
+
+        print section
+        if (is_managed && !managed_written) {
+          print "Name=" managed_name
+          print "IsRelative=1"
+          print "Path=" managed_path
+          print "Default=1"
+          for (i = 1; i <= line_count; i++) {
+            if (section_lines[i] ~ /^(Name|IsRelative|Path|Default)=/) {
+              continue
+            }
+            print section_lines[i]
+          }
+          managed_written = 1
+        } else {
+          for (i = 1; i <= line_count; i++) {
+            if (section_lines[i] ~ /^Default=/) {
+              continue
+            }
+            print section_lines[i]
+          }
+        }
+        print ""
+      } else if (is_general) {
+        print section
+        for (i = 1; i <= line_count; i++) {
+          if (section_lines[i] ~ /^(StartWithLastProfile|Version)=/) {
+            continue
+          }
+          print section_lines[i]
+        }
+        print "StartWithLastProfile=1"
+        print "Version=2"
+        print ""
+        general_written = 1
+      } else if (is_install) {
+        print section
+        for (i = 1; i <= line_count; i++) {
+          if (section_lines[i] ~ /^Default=/) {
+            default_value = substr(section_lines[i], 9)
+            if (default_value == managed_path || (source_path != "" && default_value == source_path)) {
+              print "Default=" managed_path
+            } else {
+              print section_lines[i]
+            }
+            continue
+          }
+          print section_lines[i]
+        }
+        print ""
+      } else {
+        print section
+        for (i = 1; i <= line_count; i++) {
+          print section_lines[i]
+        }
+        print ""
+      }
+
+      reset_section()
+    }
+
+    BEGIN {
+      max_profile_index = -1
+      reset_section()
+    }
+
+    /^\[/ {
+      flush_section()
+      section = $0
+      if ($0 ~ /^\[Profile[0-9]+\]$/) {
+        section_profile_index = $0
+        sub(/^\[Profile/, "", section_profile_index)
+        sub(/\]$/, "", section_profile_index)
+        section_profile_index += 0
+      }
+      next
+    }
+
+    {
+      if (section == "") {
+        next
+      }
+
+      section_lines[++line_count] = $0
+      if ($0 ~ /^Path=/) {
+        section_path = substr($0, 6)
+      }
+      if ($0 ~ /^Name=/) {
+        section_name = substr($0, 6)
+      }
+    }
+
+    END {
+      flush_section()
+
+      if (!managed_written) {
+        print "[Profile" max_profile_index + 1 "]"
+        print "Name=" managed_name
+        print "IsRelative=1"
+        print "Path=" managed_path
+        print "Default=1"
+        print ""
+      }
+
+      if (!general_written) {
+        print "[General]"
+        print "StartWithLastProfile=1"
+        print "Version=2"
+        print ""
+      }
+    }
+  ' "$profiles_ini" > "$tmp_file"
+
+  mv "$tmp_file" "$profiles_ini"
+}
+
+write_installs_ini() {
+  local source_relative_path="$1"
+  local tmp_file
+
+  [ -f "$installs_ini" ] || return 0
+
+  tmp_file="$(mktemp)"
+
+  awk \
+    -v managed_path="$managed_profile_relative_path" \
+    -v source_path="$source_relative_path" \
+    '
+    function reset_section() {
+      section = ""
+      line_count = 0
+      delete section_lines
+    }
+
+    function flush_section(    i, default_value) {
+      if (section == "") {
+        return
+      }
+
+      print section
+      for (i = 1; i <= line_count; i++) {
+        if (section_lines[i] ~ /^Default=/) {
+          default_value = substr(section_lines[i], 9)
+          if (default_value == managed_path || (source_path != "" && default_value == source_path)) {
+            print "Default=" managed_path
+          } else {
+            print section_lines[i]
+          }
+          continue
+        }
+        print section_lines[i]
+      }
+      print ""
+
+      reset_section()
+    }
+
+    BEGIN {
+      reset_section()
+    }
+
+    /^\[/ {
+      flush_section()
+      section = $0
+      next
+    }
+
+    {
+      if (section == "") {
+        next
+      }
+      section_lines[++line_count] = $0
+    }
+
+    END {
+      flush_section()
+    }
+  ' "$installs_ini" > "$tmp_file"
+
+  mv "$tmp_file" "$installs_ini"
+}
+
+mkdir -p "$profiles_dir"
+
+existing_profile_dir="$(find_existing_profile_dir || true)"
+existing_profile_relative_path=""
+if [ -n "$existing_profile_dir" ] && [[ "$existing_profile_dir" == "$firefox_base/"* ]]; then
+  existing_profile_relative_path="${existing_profile_dir#$firefox_base/}"
 fi
 
-if [ -z "$profile_dir" ] || [ ! -d "$profile_dir" ]; then
-  exit 0
+mkdir -p "$managed_profile_dir"
+
+if [ -n "$existing_profile_dir" ] && [ "$existing_profile_dir" != "$managed_profile_dir" ] && [ -d "$existing_profile_dir" ] && is_directory_empty "$managed_profile_dir"; then
+  rmdir "$managed_profile_dir"
+  mv "$existing_profile_dir" "$managed_profile_dir"
 fi
+
+write_profiles_ini "$existing_profile_relative_path"
+write_installs_ini "$existing_profile_relative_path"
 
 tmp_file="$(mktemp)"
 trap 'rm -f "$tmp_file"' EXIT
@@ -127,7 +398,7 @@ user_pref("sidebar.verticalTabs", true);
 user_pref("signon.rememberSignons", false);
 EOF
 
-target_file="$profile_dir/user.js"
+target_file="$managed_profile_dir/user.js"
 if [ -f "$target_file" ] && cmp -s "$tmp_file" "$target_file"; then
   exit 0
 fi
