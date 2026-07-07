@@ -4,7 +4,7 @@
 {{- $work_laptop := promptBoolOnce . "work_laptop" "Apply work-specific settings on this machine?" false }}
 
 [git]
-autoPush = true
+autoPush = false
 
 [data]
 github_signing_key = {{ $github_signing_key | quote }}
