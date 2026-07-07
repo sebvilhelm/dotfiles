@@ -28,7 +28,7 @@ Pull and apply the dotfiles:
 chezmoi init --apply https://github.com/sebvilhelm/dotfiles.git
 ```
 
-The first run generates the chezmoi config from `.chezmoi.toml.tmpl` and prompts for `github_signing_key` and whether the machine should apply work-specific settings. On work machines it also prompts for `lunar_name` and `lunar_email`. Provide the values you want used by the included git/jj signing and work git config.
+The first run generates the chezmoi config from `.chezmoi.toml.tmpl` and prompts for `github_signing_key`, the SSH signing program (`1password`, `ssh-keygen`, or `custom`), and whether the machine should apply work-specific settings. On work machines it also prompts for `lunar_name` and `lunar_email`. Provide the values you want used by the included git/jj signing and work git config.
 
 If the template data changes later, regenerate the config and re-apply with:
 
@@ -42,7 +42,7 @@ Work-specific files are only applied when `work_laptop` is true in chezmoi data.
 
 ## After the first apply
 
-If you use the included git/jj signing setup, sign in to the 1Password app after the Brew bundle installs it. The configs call `/Applications/1Password.app/Contents/MacOS/op-ssh-sign`.
+If you use the included git/jj signing setup with the `1password` signing program, sign in to the 1Password app after the Brew bundle installs it. The configs call `/Applications/1Password.app/Contents/MacOS/op-ssh-sign`. If you choose `ssh-keygen`, git uses its default `gpg.ssh.program` of `ssh-keygen` and jj uses its default SSH signing backend program from `PATH`.
 
 The git config also uses `gh auth git-credential`, so authenticate GitHub once:
 

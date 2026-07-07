@@ -28,7 +28,11 @@ git_push_bookmark = '"svn/push-" ++ change_id.short()'
 behavior = "own"
 backend = "ssh"
 key = "{{ .github_signing_key }}"
+{{- if or (not .signing_program) (eq .signing_program "1password") }}
 backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+{{- else if eq .signing_program "custom" }}
+backends.ssh.program = "{{ .signing_program_path }}"
+{{- end }}
 
 [git]
 private-commits = 'blacklist()'

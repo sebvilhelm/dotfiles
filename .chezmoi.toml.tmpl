@@ -1,4 +1,6 @@
-{{- $github_signing_key := promptStringOnce . "github_signing_key" "GitHub signing key location" }}
+{{- $github_signing_key := promptStringOnce . "github_signing_key" "SSH signing key location" }}
+{{- $signing_program_choices := list "1password" "ssh-keygen" "custom" }}
+{{- $signing_program := promptChoiceOnce . "signing_program" "SSH signing program" $signing_program_choices "1password" }}
 {{- $work_laptop := promptBoolOnce . "work_laptop" "Apply work-specific settings on this machine?" false }}
 
 [git]
@@ -6,6 +8,10 @@ autoPush = true
 
 [data]
 github_signing_key = {{ $github_signing_key | quote }}
+signing_program = {{ $signing_program | quote }}
+{{- if eq $signing_program "custom" }}
+signing_program_path = {{ promptStringOnce . "signing_program_path" "SSH signing program path" | quote }}
+{{- end }}
 work_laptop = {{ $work_laptop }}
 {{- if $work_laptop }}
 lunar_name = {{ promptStringOnce . "lunar_name" "Work Git author name" | quote }}
