@@ -62,6 +62,7 @@ for dump in ~/.zcompdump(N.mh+168); do #Only do it once a week. No slow terminal
   compinit
 done
 compinit -C
+source <(COMPLETE=zsh jj)
 
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
