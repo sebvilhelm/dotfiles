@@ -1,3 +1,4 @@
+{{- $lwPath := env "LW_PATH" -}}
 ## ------------------------------------------------------------------------------------------------
 
 # Schema published automatically on the website. This allows TOML language
@@ -12,15 +13,17 @@
 name = "Sebastian Vilhelm Juhl"
 email = "seb.vilhelm@gmail.com"
 
+{{ if $lwPath -}}
 ## ------------------------------------------------------------------------------------------------ 
 ## WORK
 
 [[--scope]]
---when.repositories = ["~/code/lunar"]
+--when.repositories = [{{ $lwPath | quote }}]
 [--scope.user]
 email = "svn@lunar.app"
 [--scope.templates]
 git_push_bookmark = '"svn/push-" ++ change_id.short()'
+{{ end -}}
 
 ## ------------------------------------------------------------------------------------------------ 
 
