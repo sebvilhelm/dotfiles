@@ -4,4 +4,6 @@ tmp
 pi-agent-settings.json
 {{- if not .work_laptop }}
 dot_gitconfig_lw.tmpl
+.config/nvim/lua/custom/lw_db.lua
+.config/nvim/plugin/lw_db.lua
 {{- end }}
