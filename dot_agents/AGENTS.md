@@ -61,6 +61,7 @@ Some information about the user's coding environment:
 
 ### Working with GitHub
 
+- Never push commits or bookmarks, and never post comments, reviews, replies, or other messages on the user's behalf, unless the user explicitly instructs you to perform that specific external action.
 - When given a GitHub link, instead of fetching the URL directly, use the `gh` CLI to fetch the same data in plaintext if possible
 - When you're in running in the repo under discussion, prefer local commands for looking at history over GitHub API calls that would fetch the same data.
 

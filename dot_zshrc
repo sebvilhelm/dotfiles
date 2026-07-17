@@ -73,3 +73,5 @@ eval "$(starship init zsh)"
 
 # https://github.com/oxidecomputer/skepsis
 alias sk="npx --prefix ~/code/skepsis tsx ~/code/skepsis/cli.ts"
+
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
