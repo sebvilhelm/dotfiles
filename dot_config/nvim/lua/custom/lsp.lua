@@ -14,6 +14,7 @@ vim.lsp.enable("buf_ls")
 vim.lsp.enable("marksman")
 vim.lsp.enable("tailwindcss")
 vim.lsp.enable("tinymist")
+vim.lsp.enable("gleam")
 
 vim.lsp.enable("tsgo")
 
