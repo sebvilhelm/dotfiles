@@ -19,6 +19,9 @@
   "followUpMode": "one-at-a-time",
   "enableInstallTelemetry": false,
   "hideThinkingBlock": false,
+  "compaction": {
+    "enabled": false
+  },
   "npmCommand": [
     "pnpm"
   ],
