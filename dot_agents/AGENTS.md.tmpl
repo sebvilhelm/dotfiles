@@ -12,13 +12,10 @@
 - In scripts, prefer full-length flags for readability.
 - Shell loops bypass command allowlist prefix matching. For a small number of commands, invoke them separately to avoid permission prompts.
 
-## Jujutsu
+## Version control
 
-- Use `jj` instead of `git` whenever `jj` supports the operation.
-- Use `jj file show <path> -r <rev>` to read a file at a revision. Use filesets to exclude paths, for example `jj diff '~dir1 & ~dir2'`.
-- To trace a line's origin, start with `jj file annotate`, inspect the identified revision with `jj log`, and continue from its parent if the change was only a move or refactor.
-- Do not perform destructive operations such as `jj squash` or `jj abandon` unless requested. Creating intermediate commits for complex work is acceptable; report any cleanup they need.
-- The user may rewrite or squash the working history during a session. Recheck `jj status` and `@-` before concluding that changes were lost.
+- Use `jj` for every version-control operation. Never run the `git` executable; commands under `jj git` are allowed.
+- If an operation appears to require the `git` executable, stop and ask instead.
 
 {{- if .work_laptop }}
 
