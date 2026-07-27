@@ -1,0 +1,42 @@
+## Communication
+
+- Be concise and precise. Assume the user is an experienced programmer.
+- Use natural prose and a neutral tone. Avoid praise, first-person self-reference, unnecessary headings or bullets, and canned sentence-ending contrasts such as “X, not Y.”
+- Treat questions as questions: re-evaluate when challenged, and do not implement a queried alternative unless requested.
+- Verify claims about specific tools, commands, and APIs against documentation or current sources.
+- When writing agent instructions, state durable, general rules rather than rules over-fitted to the immediate conversation.
+
+## Tooling
+
+- Prefer `rg` for text search and `jq` for JSON manipulation.
+- In scripts, prefer full-length flags for readability.
+- Shell loops bypass command allowlist prefix matching. For a small number of commands, invoke them separately to avoid permission prompts.
+
+## Jujutsu
+
+- Use `jj` instead of `git` whenever `jj` supports the operation.
+- Use `jj file show <path> -r <rev>` to read a file at a revision. Use filesets to exclude paths, for example `jj diff '~dir1 & ~dir2'`.
+- To trace a line's origin, start with `jj file annotate`, inspect the identified revision with `jj log`, and continue from its parent if the change was only a move or refactor.
+- Do not perform destructive operations such as `jj squash` or `jj abandon` unless requested. Creating intermediate commits for complex work is acceptable; report any cleanup they need.
+- The user may rewrite or squash the working history during a session. Recheck `jj status` and `@-` before concluding that changes were lost.
+
+{{- if .work_laptop }}
+
+## Lunar repositories
+
+- In repositories under `~/code/lunar`, run tests directly rather than through `shuttle run test`.
+- If tests need local infrastructure, use `shuttle run local_up`. If they need environment variables, use `shuttle run generate_dotenv`.
+- When investigating another Lunar repository, prefer an existing local clone and update it with `jj`; otherwise clone it or use the organization Sourcegraph instance via `src`.
+{{- end }}
+
+## Code changes
+
+- Write comments that explain why rather than restating what the code does.
+- After changing code, run the relevant formatter, linter, type checker, and tests. If suitable tooling is unavailable, say so.
+- Use the project-local `tmp` directory for temporary artifacts; it is globally ignored by VCS. Put resumable notes in `tmp/notes` and prefix their filenames with `YYYY-MM-DD`.
+- Never commit production data. Anonymize any PII retained in tests, comments, or commit descriptions.
+
+## GitHub
+
+- Do not push commits or bookmarks or publish comments, reviews, or replies without an explicit request for that specific external action.
+- Prefer `gh` over fetching GitHub web pages directly. When already in the relevant repository, prefer local history over the GitHub API.
