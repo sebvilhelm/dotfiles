@@ -18,6 +18,6 @@ description: "Go development workflow and style for this environment. Use whenev
 After changing Go code:
 
 1. Run `go fmt` on the changed files.
-2. Run `go build ./...` to verify the project still builds.
-3. Run relevant tests.
-4. Use `go test -run` to target the relevant tests instead of running the entire suite.
+2. Run the relevant targeted tests, using `go test <packages> -run <pattern>` when appropriate; broaden the test scope as warranted by the change.
+3. Run the repository's documented lint, static-analysis, and build commands that cover the changed code.
+4. Use `go build ./...` only when the repository supports building its full package tree together. Otherwise, use the documented build command or build the affected command packages.
