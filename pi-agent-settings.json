@@ -13,7 +13,8 @@
   ],
   "packages": [
     "npm:pi-tmux-focus-cursor",
-    "npm:pi-mcp-adapter"
+    "npm:pi-mcp-adapter",
+    "git:github.com/earendil-works/pi-review-loop"
   ],
   "steeringMode": "one-at-a-time",
   "followUpMode": "one-at-a-time",
