@@ -14,14 +14,12 @@ prefix = "ctrl+a"
 
 # Prefix-mode actions corresponding to familiar tmux commands.
 detach = "prefix+d"
-reload_config = "prefix+r"
 workspace_picker = "prefix+w"
 new_workspace = "prefix+shift+n"
 new_tab = "prefix+c"
 rename_tab = "prefix+comma"
 previous_tab = "prefix+p"
 next_tab = "prefix+n"
-switch_tab = "prefix+1..9"
 close_tab = "prefix+shift+x"
 rename_pane = "prefix+shift+p"
 edit_scrollback = "prefix+e"
@@ -35,17 +33,16 @@ focus_pane_right = "prefix+l"
 # Herdr's names describe the resulting split orientation: v is side-by-side,
 # and horizontal is stacked. These are the closest reliable key equivalents
 # to tmux's % and \" bindings.
-split_vertical = "prefix+v"
+# Prefix + | (Shift+\\) creates a side-by-side split.
+split_vertical = "prefix+shift+backslash"
 split_horizontal = "prefix+minus"
 close_pane = "prefix+x"
 zoom = "prefix+z"
-# r is used for reload, so shifted-r enters resize mode.
-resize_mode = "prefix+shift+r"
 
 [ui]
 # Keep the sidebar visible by default. Uncomment to start collapsed.
 # sidebar_start_collapsed = true
-sidebar_collapsed_mode = "compact"
-tab_bar_position = "top"
+# sidebar_collapsed_mode = "compact"
+# tab_bar_position = "top"
 # Match set -g mouse on.
-mouse_capture = true
+# mouse_capture = true

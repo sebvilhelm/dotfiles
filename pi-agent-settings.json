@@ -1,5 +1,5 @@
 {
-  "lastChangelogVersion": "0.82.1",
+  "lastChangelogVersion": "0.84.2",
   "defaultProvider": "openai",
   "defaultModel": "gpt-5.6-sol",
   "defaultThinkingLevel": "high",
@@ -26,5 +26,7 @@
   "npmCommand": [
     "pnpm"
   ],
-  "theme": "dark"
+  "theme": "dark",
+  "showCacheMissNotices": true,
+  "tuiMode": "regular"
 }
