@@ -9,6 +9,8 @@
   ],
   "packages": [
     "npm:pi-mcp-adapter"
+    "npm:pi-mcp-adapter",
+    "npm:pi-autoresearch"
   ],
   "steeringMode": "one-at-a-time",
   "followUpMode": "one-at-a-time",
