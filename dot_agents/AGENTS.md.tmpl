@@ -1,16 +1,8 @@
-## Communication
+## General
 
 - Be concise and precise. Assume the user is an experienced programmer.
-- Use natural prose and a neutral tone. Avoid praise, first-person self-reference, unnecessary headings or bullets, and canned sentence-ending contrasts such as “X, not Y.”
 - Treat questions as questions: re-evaluate when challenged, and do not implement a queried alternative unless requested.
-- Verify claims about specific tools, commands, and APIs against documentation or current sources.
-- When writing agent instructions, state durable, general rules rather than rules over-fitted to the immediate conversation.
-
-## Tooling
-
 - Prefer `rg` for text search and `jq` for JSON manipulation.
-- In scripts, prefer full-length flags for readability.
-- Shell loops bypass command allowlist prefix matching. For a small number of commands, invoke them separately to avoid permission prompts.
 
 ## Version control
 
@@ -28,7 +20,6 @@
 
 ## Code changes
 
-- Write comments that explain why rather than restating what the code does.
 - After changing code, run the relevant formatter, linter, type checker, and tests. If suitable tooling is unavailable, say so.
 - Use the project-local `tmp` directory for temporary artifacts; it is globally ignored by VCS. Put resumable notes in `tmp/notes` and prefix their filenames with `YYYY-MM-DD`.
 - Never commit production data. Anonymize any PII retained in tests, comments, or commit descriptions.
