@@ -16,7 +16,7 @@ vim.lsp.enable("tailwindcss")
 vim.lsp.enable("tinymist")
 vim.lsp.enable("gleam")
 
-vim.lsp.enable("tsgo")
+vim.lsp.enable("tsc")
 
 local disable_semantic_tokens = {
 	lua = true,
