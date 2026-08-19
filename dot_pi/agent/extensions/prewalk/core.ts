@@ -5,11 +5,11 @@ export const DEFAULT_GUIDE_MODEL = {
 
 export const DEFAULT_IMPLEMENTATION_MODEL = {
   provider: "openai",
-  id: "gpt-5.6-luna",
+  id: "gpt-5.6-terra",
 } as const;
 
 export const GUIDE_THINKING_LEVEL = "high" as const;
-export const IMPLEMENTATION_THINKING_LEVEL = "medium" as const;
+export const IMPLEMENTATION_THINKING_LEVEL = "high" as const;
 
 export const GUIDE_MESSAGE_TYPE = "prewalk-guide";
 export const CONTINUE_MESSAGE_TYPE = "prewalk-continue";

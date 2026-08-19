@@ -61,12 +61,12 @@ Deno.test("round-trips valid persisted state and rejects malformed state", () =>
   assert.deepEqual(
     parseStoredPrewalkState({
       status: "armed",
-      implementationModel: { provider: "openai", id: "gpt-5.6-luna" },
+      implementationModel: { provider: "openai", id: "gpt-5.6-terra" },
       continuationPending: false,
     }),
     {
       status: "armed",
-      implementationModel: { provider: "openai", id: "gpt-5.6-luna" },
+      implementationModel: { provider: "openai", id: "gpt-5.6-terra" },
       continuationPending: false,
     },
   );

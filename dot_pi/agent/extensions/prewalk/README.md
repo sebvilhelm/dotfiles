@@ -7,7 +7,7 @@ implementation model in the same Pi session after the first successful
 By default it uses:
 
 - Guide: `openai/gpt-5.6-sol` with `high` reasoning
-- Implementation: `openai/gpt-5.6-luna` with `medium` reasoning
+- Implementation: `openai/gpt-5.6-terra` with `high` reasoning
 
 Start a run with the defaults:
 
@@ -22,8 +22,8 @@ the session's scoped models when configured, matching Pi's model scope:
 /prewalk --models Fix the race in the session cache and add regression coverage
 ```
 
-The selected models are per-run; the reasoning levels remain `high` for the
-guide and `medium` for implementation. Pi clamps them when a selected model
+The selected models are per-run; the reasoning levels remain `high` for both
+the guide and implementation. Pi clamps them when a selected model
 does not support those levels.
 
 The extension injects hidden guide and implementation instructions, preserves
