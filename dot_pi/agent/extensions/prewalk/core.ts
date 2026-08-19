@@ -5,7 +5,7 @@ export const DEFAULT_GUIDE_MODEL = {
 
 export const DEFAULT_IMPLEMENTATION_MODEL = {
   provider: "openai",
-  id: "gpt-5.6-terra",
+  id: "gpt-5.6-luna",
 } as const;
 
 export const GUIDE_THINKING_LEVEL = "high" as const;
@@ -14,28 +14,32 @@ export const IMPLEMENTATION_THINKING_LEVEL = "high" as const;
 export const GUIDE_MESSAGE_TYPE = "prewalk-guide";
 export const CONTINUE_MESSAGE_TYPE = "prewalk-continue";
 export const IMPLEMENTATION_MESSAGE_TYPE = "prewalk-implementation";
+export const CHECKLIST_MESSAGE_TYPE = "prewalk-checklist";
 
 export const PREWALK_GUIDE_PROMPT =
-  `You are the guide in a prewalk run. The useful handoff artifact is this same conversation and worktree, not a standalone plan.
+  `Plan deeply, then capture the plan as a Markdown todo list, then start implementation.
+
+You are the frontier model in a prewalk run. The useful handoff artifact is this same conversation and worktree, not a standalone plan document.
 
 Before changing task files:
 1. Read the applicable project instructions and inspect the relevant code, tests, history, and documentation until the approach is grounded in the actual code.
-2. State a concrete plan in the conversation: ordered changes, exact files and symbols, risks and edge cases, and the validation for each change.
-3. Include a Markdown checklist of 5–9 meaningful implementation and validation items. Do not create a plan file.
+2. State the concrete plan in the conversation: ordered changes, exact files and symbols, risks and edge cases, and the validation for each change.
+3. Capture that plan as a Markdown todo list of 5–9 meaningful implementation and validation items. Do not create a plan file.
 
 Then begin implementation. Make exactly one coherent, substantive task-file edit that demonstrates the approach and leaves the worktree in a sensible intermediate state. A test or reproduction may be that edit when the plan calls for it. Do not make a throwaway edit, do not pack the whole task into the first edit, and do not issue multiple mutating tool calls in parallel. Once that edit succeeds, make no further tool calls in this turn; the prewalk extension will switch models before the next turn.
 
 Do not stop after writing the plan. Continue through the first implementation edit in this run.`;
 
 export const PREWALK_CONTINUE_PROMPT =
-  `Continue the prewalk guide phase now. Do not merely restate the plan or announce that you are ready. Complete the required exploration and checklist if needed, then make the first coherent implementation edit.`;
+  `Continue the prewalk frontier phase now. Do not merely restate the plan or announce that you are ready. Complete the required exploration and todo list if needed, then make the first coherent implementation edit.`;
 
-export const PREWALK_IMPLEMENTATION_PROMPT =
-  `The prewalk handoff is complete. You are now the implementation model. The earlier guide-phase limits have expired.
+export const PREWALK_CHECKLIST_PROMPT = `Before task complete, verify:
 
-Continue from the existing exploration, checklist, worktree, and first edit. Do not restart planning or repeat reads solely to reconstruct context already present. Work through every remaining checklist item, revising the checklist if the code contradicts the plan. Apply all project-required formatting, linting, typechecking, builds, and tests.
+- Consistency: If a pattern, signature, or check changed in one place, grep every other call site or duplicate copy needing identical change. A fix at only some matching sites fails.
+- Scope: If diff exceeds the minimal issue-resolving change, confirm behavior unchanged outside the reported issue. Prefer the smallest correct diff over a broader rewrite.
+- Verification: Run the issue's full test module or file, not only the expected-to-flip test. A sibling-test-breaking change fails.
 
-Before finishing, check matching call sites and duplicate patterns, review the complete diff for unintended scope, and run the full relevant test module or file rather than only a narrow test. Do not claim completion while required verification remains unresolved; report blockers explicitly.`;
+Do not claim task complete until all three checks are done.`;
 
 export type ParsedPrewalkArguments =
   | { task: string; selectModels: boolean }
@@ -104,6 +108,7 @@ export function filterPrewalkControlMessages<T extends PrewalkContextMessage>(
   let lastGuide = -1;
   let lastContinue = -1;
   let lastImplementation = -1;
+  let lastChecklist = -1;
 
   for (const [index, message] of messages.entries()) {
     if (message.role !== "custom") continue;
@@ -112,6 +117,7 @@ export function filterPrewalkControlMessages<T extends PrewalkContextMessage>(
     if (message.customType === IMPLEMENTATION_MESSAGE_TYPE) {
       lastImplementation = index;
     }
+    if (message.customType === CHECKLIST_MESSAGE_TYPE) lastChecklist = index;
   }
 
   if (lastGuide < 0 && lastImplementation < 0) return [...messages];
@@ -126,7 +132,11 @@ export function filterPrewalkControlMessages<T extends PrewalkContextMessage>(
       return guidePhase && index === lastContinue && index > lastGuide;
     }
     if (message.customType === IMPLEMENTATION_MESSAGE_TYPE) {
-      return !guidePhase && index === lastImplementation;
+      return false;
+    }
+    if (message.customType === CHECKLIST_MESSAGE_TYPE) {
+      return !guidePhase && index === lastChecklist &&
+        index > lastImplementation;
     }
     return true;
   });

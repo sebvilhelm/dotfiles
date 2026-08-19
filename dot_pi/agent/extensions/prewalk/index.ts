@@ -4,6 +4,7 @@ import type {
   ExtensionContext,
 } from "@earendil-works/pi-coding-agent";
 import {
+  CHECKLIST_MESSAGE_TYPE,
   CONTINUE_MESSAGE_TYPE,
   DEFAULT_GUIDE_MODEL,
   DEFAULT_IMPLEMENTATION_MODEL,
@@ -16,9 +17,9 @@ import {
   modelKey,
   parsePrewalkArguments,
   parseStoredPrewalkState,
+  PREWALK_CHECKLIST_PROMPT,
   PREWALK_CONTINUE_PROMPT,
   PREWALK_GUIDE_PROMPT,
-  PREWALK_IMPLEMENTATION_PROMPT,
   type StoredPrewalkState,
 } from "./core.ts";
 
@@ -249,15 +250,24 @@ export default function prewalkExtension(pi: ExtensionAPI): void {
       pi.sendMessage(
         {
           customType: IMPLEMENTATION_MESSAGE_TYPE,
-          content: switched
-            ? PREWALK_IMPLEMENTATION_PROMPT
-            : `${PREWALK_IMPLEMENTATION_PROMPT}\n\nThe requested model switch failed, so continue on the current model.`,
+          // This is a session marker. The context hook uses it to prune all
+          // guide-phase instructions, including this marker, before the
+          // implementation model sees its first request.
+          content: "",
           display: false,
           details: {
             implementationModel: modelKey(current.implementationModel),
             triggerTool: action.toolName,
             switched,
           },
+        },
+        { deliverAs: "steer" },
+      );
+      pi.sendMessage(
+        {
+          customType: CHECKLIST_MESSAGE_TYPE,
+          content: PREWALK_CHECKLIST_PROMPT,
+          display: false,
         },
         { deliverAs: "steer" },
       );

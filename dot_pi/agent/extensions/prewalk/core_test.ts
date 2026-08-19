@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import {
+  CHECKLIST_MESSAGE_TYPE,
   CONTINUE_MESSAGE_TYPE,
+  DEFAULT_IMPLEMENTATION_MODEL,
   filterPrewalkControlMessages,
   GUIDE_MESSAGE_TYPE,
   IMPLEMENTATION_MESSAGE_TYPE,
@@ -57,16 +59,23 @@ Deno.test("switches only after successful file-mutation tools", () => {
   );
 });
 
+Deno.test("uses Luna as the default implementation model", () => {
+  assert.deepEqual(DEFAULT_IMPLEMENTATION_MODEL, {
+    provider: "openai",
+    id: "gpt-5.6-luna",
+  });
+});
+
 Deno.test("round-trips valid persisted state and rejects malformed state", () => {
   assert.deepEqual(
     parseStoredPrewalkState({
       status: "armed",
-      implementationModel: { provider: "openai", id: "gpt-5.6-terra" },
+      implementationModel: { provider: "openai", id: "gpt-5.6-luna" },
       continuationPending: false,
     }),
     {
       status: "armed",
-      implementationModel: { provider: "openai", id: "gpt-5.6-terra" },
+      implementationModel: { provider: "openai", id: "gpt-5.6-luna" },
       continuationPending: false,
     },
   );
@@ -122,6 +131,7 @@ Deno.test("keeps only the current prewalk phase instructions in context", () => 
   const implemented = [
     ...messages,
     control(IMPLEMENTATION_MESSAGE_TYPE, "current-implementation"),
+    control(CHECKLIST_MESSAGE_TYPE, "current-checklist"),
   ];
   assert.deepEqual(
     filterPrewalkControlMessages(implemented).map(({ id }) => id),
@@ -129,7 +139,7 @@ Deno.test("keeps only the current prewalk phase instructions in context", () => 
       "old-work",
       "exploration",
       "more-exploration",
-      "current-implementation",
+      "current-checklist",
     ],
   );
 });
