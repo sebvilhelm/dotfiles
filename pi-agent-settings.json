@@ -9,7 +9,6 @@
     "openai/gpt-5.6-terra"
   ],
   "packages": [
-    "npm:pi-mcp-adapter",
     "npm:pi-autoresearch"
   ],
   "steeringMode": "one-at-a-time",
