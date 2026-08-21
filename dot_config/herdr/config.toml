@@ -1,6 +1,9 @@
 # Herdr settings that intentionally mirror dot_tmux.conf.
 # Everything omitted here keeps Herdr's default.
 
+# Skip Herdr's first-run notification setup.
+onboarding = false
+
 [theme]
 name = "gruvbox"
 
