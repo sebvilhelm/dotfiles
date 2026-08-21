@@ -40,9 +40,16 @@ close_pane = "prefix+x"
 zoom = "prefix+z"
 
 [ui]
+# Surface agents needing attention ahead of workspace grouping.
+agent_panel_sort = "priority"
+
 # Keep the sidebar visible by default. Uncomment to start collapsed.
 # sidebar_start_collapsed = true
 # sidebar_collapsed_mode = "compact"
 # tab_bar_position = "top"
 # Match set -g mouse on.
 # mouse_capture = true
+
+[ui.sound]
+# Do not play audio when background agents complete or need input.
+enabled = false
