@@ -25,13 +25,12 @@ Interactive reviews ask whether to use an isolated conversation branch when the 
 1. Reads PR metadata with `gh`.
 2. Fetches the base and head bookmarks using `jj git fetch`, including fork remotes.
 3. Verifies the fetched head against GitHub's reported commit.
-4. Sets `pi-review/pr-<number>` to the PR head.
-5. Preserves the original working copy with a temporary local bookmark.
-6. Creates an empty working-copy change on top of the PR head, keeping fixes separate from imported history.
+4. Records the original working-copy change ID for restoration.
+5. Creates an empty working-copy change on top of the PR head, keeping fixes separate from imported history.
 
 `/end-review return` and `/end-review summarize` restore the original working copy. `/end-review fix` leaves the working copy on the PR fix change and queues a fix turn; run `/review-restore` afterward. Review changes remain in Jujutsu history.
 
-The extension never invokes the Git executable or pushes bookmarks.
+The extension never creates local bookmarks, invokes the Git executable, or pushes bookmarks.
 
 ## Project instructions
 

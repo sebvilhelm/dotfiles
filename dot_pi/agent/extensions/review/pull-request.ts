@@ -475,71 +475,11 @@ async function preparePullRequest(
     return undefined;
   }
 
-  const bookmark = `pi-review/pr-${pullRequest.number}`;
-  const originBookmark = `pi-review/origin-pr-${pullRequest.number}-${
-    originalChangeId.slice(0, 8)
-  }`;
-  const setOriginBookmark = await pi.exec(
-    "jj",
-    [
-      "--repository",
-      repoRoot,
-      "bookmark",
-      "set",
-      "--allow-backwards",
-      "-r",
-      "@",
-      originBookmark,
-    ],
-    { timeout: 10_000 },
-  );
-  if (setOriginBookmark.code !== 0) {
-    notify(
-      ctx,
-      `Could not preserve the current working copy with bookmark ${originBookmark}: ${
-        setOriginBookmark.stderr.trim() || setOriginBookmark.stdout.trim()
-      }`,
-      "error",
-    );
-    return undefined;
-  }
-
   const restore: RepositoryRestoreState = {
     repoRoot,
     originalChangeId,
-    originBookmark,
-    bookmark,
     pullRequestNumber: pullRequest.number,
   };
-  const setBookmark = await pi.exec(
-    "jj",
-    [
-      "--repository",
-      repoRoot,
-      "bookmark",
-      "set",
-      "--allow-backwards",
-      "-r",
-      pullRequest.headRefOid,
-      bookmark,
-    ],
-    { timeout: 10_000 },
-  );
-  if (setBookmark.code !== 0) {
-    await pi.exec(
-      "jj",
-      ["--repository", repoRoot, "bookmark", "delete", originBookmark],
-      { timeout: 10_000 },
-    );
-    notify(
-      ctx,
-      `Could not set local bookmark ${bookmark}: ${
-        setBookmark.stderr.trim() || setBookmark.stdout.trim()
-      }`,
-      "error",
-    );
-    return undefined;
-  }
 
   const createWorkingCopy = await pi.exec(
     "jj",

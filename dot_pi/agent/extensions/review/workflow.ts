@@ -23,8 +23,6 @@ type NotificationLevel = "info" | "warning" | "error";
 export type RepositoryRestoreState = {
   repoRoot: string;
   originalChangeId: string;
-  originBookmark: string;
-  bookmark: string;
   pullRequestNumber: number;
 };
 
@@ -68,8 +66,6 @@ function isRestoreState(value: unknown): value is RepositoryRestoreState {
     isRecord(value) &&
     typeof value.repoRoot === "string" &&
     typeof value.originalChangeId === "string" &&
-    typeof value.originBookmark === "string" &&
-    typeof value.bookmark === "string" &&
     typeof value.pullRequestNumber === "number"
   );
 }
@@ -612,7 +608,7 @@ export class ReviewWorkflow {
       (await currentChangeId(this.pi, restore.repoRoot));
     const result = await this.pi.exec(
       "jj",
-      ["--repository", restore.repoRoot, "edit", restore.originBookmark],
+      ["--repository", restore.repoRoot, "edit", restore.originalChangeId],
       { timeout: 30_000 },
     );
     if (result.code !== 0) {
@@ -634,17 +630,6 @@ export class ReviewWorkflow {
       return false;
     }
 
-    const removeAnchor = await this.pi.exec(
-      "jj",
-      [
-        "--repository",
-        restore.repoRoot,
-        "bookmark",
-        "delete",
-        restore.originBookmark,
-      ],
-      { timeout: 10_000 },
-    );
     this.pi.appendEntry(
       REVIEW_RESTORE_TYPE,
       {
@@ -656,13 +641,10 @@ export class ReviewWorkflow {
     const preserved = reviewChangeId
       ? ` PR review work remains in change ${reviewChangeId}.`
       : "";
-    const anchorWarning = removeAnchor.code === 0
-      ? ""
-      : ` Temporary bookmark ${restore.originBookmark} could not be removed.`;
     notify(
       ctx,
-      `Restored the original working-copy change ${restore.originalChangeId}.${preserved}${anchorWarning}`,
-      removeAnchor.code === 0 ? "info" : "warning",
+      `Restored the original working-copy change ${restore.originalChangeId}.${preserved}`,
+      "info",
     );
     return true;
   }
