@@ -69,6 +69,7 @@ merge-args = ["-a", "FileMerge", "-n", "-W", "--args",
 
 [revsets]
 # log = "(trunk()..@):: | (trunk()..@)-"
+bookmark-advance-to = "closest_pushable(@)"
 
 [revset-aliases]
 # https://gist.github.com/thoughtpolice/8f2fd36ae17cd11b8e7bd93a70e31ad6
@@ -89,7 +90,9 @@ merge-args = ["-a", "FileMerge", "-n", "-W", "--args",
 'stack(x, n)' = 'ancestors(reachable(x, mutable()), n)'
 
 'closest_bookmark(to)' = 'heads(::to & bookmarks())'
-'closest_pushable(to)' = 'heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'
+[revset-aliases."closest_pushable(to)"]
+definition = 'heads(::to & mutable() & ~empty() & description(regex:".+"))'
+doc = "Closest mutable, non-empty, described commits at or behind to"
 
 [fix.tools.gofmt]
 patterns = ["glob:'**/*.go'"]
@@ -128,8 +131,6 @@ draft_commit_description = '''
 '''
 
 [aliases]
-tug = ["bookmark", "move", "--from", "heads(::@ & bookmarks())", "--to", "closest_pushable(@)"]
-
 pr = ["util", "exec", "--", "bash", "-c", """
 gh pr create --head $(jj log -r 'closest_bookmark(@)' -T 'bookmarks' --no-graph | cut -d ' ' -f 1)
 """]
