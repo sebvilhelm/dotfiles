@@ -10,7 +10,6 @@
     "openai/gpt-6-astra"
   ],
   "packages": [
-    "npm:pi-autoresearch",
     "npm:@plannotator/pi-extension"
   ],
   "steeringMode": "one-at-a-time",
