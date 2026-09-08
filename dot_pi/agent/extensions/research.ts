@@ -1,6 +1,6 @@
 import type { ExtensionAPI } from "@earendil-works/pi-coding-agent";
 
-const RESEARCH_TOOLS = ["web_search"];
+const RESEARCH_TOOLS = ["web_search", "read"];
 
 const RESEARCH_SYSTEM_PROMPT =
   `You are a research assistant. Help the user make well-supported, practical decisions about recipes, shopping, spare parts, travel, restaurants, and build specifications.
