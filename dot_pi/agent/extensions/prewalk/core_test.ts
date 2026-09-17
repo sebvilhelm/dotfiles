@@ -2,10 +2,13 @@ import assert from "node:assert/strict";
 import {
   CHECKLIST_MESSAGE_TYPE,
   CONTINUE_MESSAGE_TYPE,
+  DEFAULT_GUIDE_MODEL,
   DEFAULT_IMPLEMENTATION_MODEL,
   filterPrewalkControlMessages,
   GUIDE_MESSAGE_TYPE,
+  GUIDE_THINKING_LEVEL,
   IMPLEMENTATION_MESSAGE_TYPE,
+  IMPLEMENTATION_THINKING_LEVEL,
   isSuccessfulImplementationAction,
   modelKey,
   parsePrewalkArguments,
@@ -59,23 +62,29 @@ Deno.test("switches only after successful file-mutation tools", () => {
   );
 });
 
-Deno.test("uses Luna as the default implementation model", () => {
+Deno.test("uses Astra/high for guidance and Sol/medium for implementation", () => {
+  assert.deepEqual(DEFAULT_GUIDE_MODEL, {
+    provider: "openai",
+    id: "gpt-6-astra",
+  });
   assert.deepEqual(DEFAULT_IMPLEMENTATION_MODEL, {
     provider: "openai",
-    id: "gpt-5.6-luna",
+    id: "gpt-6-sol",
   });
+  assert.equal(GUIDE_THINKING_LEVEL, "high");
+  assert.equal(IMPLEMENTATION_THINKING_LEVEL, "medium");
 });
 
 Deno.test("round-trips valid persisted state and rejects malformed state", () => {
   assert.deepEqual(
     parseStoredPrewalkState({
       status: "armed",
-      implementationModel: { provider: "openai", id: "gpt-5.6-luna" },
+      implementationModel: { provider: "openai", id: "gpt-6-sol" },
       continuationPending: false,
     }),
     {
       status: "armed",
-      implementationModel: { provider: "openai", id: "gpt-5.6-luna" },
+      implementationModel: { provider: "openai", id: "gpt-6-sol" },
       continuationPending: false,
     },
   );
@@ -94,8 +103,8 @@ Deno.test("round-trips valid persisted state and rejects malformed state", () =>
 
 Deno.test("formats canonical model keys", () => {
   assert.equal(
-    modelKey({ provider: "openai", id: "gpt-5.6-sol" }),
-    "openai/gpt-5.6-sol",
+    modelKey({ provider: "openai", id: "gpt-6-sol" }),
+    "openai/gpt-6-sol",
   );
 });
 
