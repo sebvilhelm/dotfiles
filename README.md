@@ -62,6 +62,15 @@ If you want a local Neovim build, clone `neovim/neovim`, install its build depen
 
 Open `nvim` once to let `lazy.nvim` clone and install plugins.
 
+Neovim runs `rust-analyzer` through `lspmux`. The Brew bundle installs both and starts the `lspmux` service at login. To check it:
+
+```sh
+brew services list
+lspmux status
+```
+
+Homebrew writes the service log to `$(brew --prefix)/var/log/lspmux.log`.
+
 Firefox settings are applied via a managed `user.js` in the active Firefox profile, and selected extensions are copied into that profile's `extensions/` directory. Launch Firefox once so it creates a profile, quit Firefox, run `chezmoi apply` again, and then launch Firefox again.
 
 One local extra is still referenced but not managed here. Add it manually if you use it:
