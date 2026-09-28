@@ -134,5 +134,8 @@ draft_commit_description = '''
 pr = ["util", "exec", "--", "bash", "-c", """
 gh pr create --head $(jj log -r 'closest_bookmark(@)' -T 'bookmarks' --no-graph | cut -d ' ' -f 1)
 """]
+fresh = ["util", "exec", "--", "bash", "-c", """
+jj git fetch && jj new master
+"""]
 
 
