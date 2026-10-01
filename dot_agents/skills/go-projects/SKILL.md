@@ -11,6 +11,7 @@ description: "Go development workflow and style for this environment. Use whenev
 - `go fix` can help upgrade syntax, but revert unrelated changes.
 - Prefer local mapper functions over inline mapping or package-level mapper helpers unless the mapping is materially more complex than copying primitive fields or slices.
 - Prefer struct methods for collection-style helpers.
+- Do not add forwarding methods that only alias another method. Call the canonical method directly; rename or move its implementation when a different name is needed.
 - Use `testify/assert` and `testify/require` in tests.
 
 ## Verification

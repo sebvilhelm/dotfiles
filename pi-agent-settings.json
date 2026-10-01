@@ -1,27 +1,30 @@
 {
-	"lastChangelogVersion": "0.87.1",
-	"defaultProvider": "openai",
-	"defaultModel": "gpt-6-sol",
-	"defaultThinkingLevel": "high",
-	"enabledModels": [
-		"openai/gpt-6-sol",
-		"openai/gpt-6-luna",
-		"openai/gpt-6-astra"
-	],
-	"packages": [
-		"npm:@plannotator/pi-extension"
-	],
-	"steeringMode": "one-at-a-time",
-	"followUpMode": "one-at-a-time",
-	"enableInstallTelemetry": false,
-	"hideThinkingBlock": false,
-	"compaction": {
-		"enabled": true
-	},
-	"npmCommand": [
-		"pnpm"
-	],
-	"theme": "dark",
-	"showCacheMissNotices": true,
-	"tuiMode": "regular"
+  "lastChangelogVersion": "1.0.4",
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-6.1-sol",
+  "defaultThinkingLevel": "high",
+  "defaultTools": [
+    "+codemode"
+  ],
+  "enabledModels": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6-luna",
+    "openai/gpt-6-astra"
+  ],
+  "packages": [
+    "npm:@plannotator/pi-extension"
+  ],
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time",
+  "enableInstallTelemetry": false,
+  "hideThinkingBlock": false,
+  "compaction": {
+    "enabled": true
+  },
+  "npmCommand": [
+    "pnpm"
+  ],
+  "theme": "dark",
+  "showCacheMissNotices": true,
+  "tuiMode": "regular"
 }

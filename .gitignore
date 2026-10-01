@@ -1,2 +1,4 @@
 .DS_Store
+/dot_pi/agent/mcp.json
+/dot_pi/agent/extensions/clickhouse/
 !AGENTS.md
