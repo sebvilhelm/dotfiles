@@ -1,7 +1,6 @@
 **/.DS_Store
 lazy-lock.json
 tmp
-pi-agent-settings.json
 .pi/agent/mcp.json
 .pi/agent/extensions/clickhouse
 {{- if not .work_laptop }}

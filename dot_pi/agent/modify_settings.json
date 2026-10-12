@@ -1,0 +1,72 @@
+{{- /* chezmoi:modify-template */ -}}
+
+{{- /* Parse the current file, or start with an empty object on a fresh machine.
+      Chezmoi renders this template natively; it is not executed as a script. */}}
+{{- $settings := .chezmoi.stdin | trim | default "{}" | fromJson }}
+{{- if not (kindIs "map" $settings) }}
+  {{- fail "Pi settings must be a JSON object" }}
+{{- end }}
+
+{{- /* Seed only missing fields. Never seed Pi-owned state such as
+      lastChangelogVersion or overwrite explicit false values and empty arrays. */}}
+{{- $defaults := fromJson `{
+  "defaultProvider": "openai",
+  "defaultModel": "gpt-6.1-sol",
+  "defaultThinkingLevel": "high",
+  "defaultTools": ["+codemode"],
+  "enabledModels": [
+    "openai/gpt-6.1-sol",
+    "openai/gpt-6-luna",
+    "openai/gpt-6-astra"
+  ],
+  "packages": ["npm:@plannotator/pi-extension"],
+  "steeringMode": "one-at-a-time",
+  "followUpMode": "one-at-a-time",
+  "enableInstallTelemetry": false,
+  "hideThinkingBlock": false,
+  "compaction": {"enabled": true},
+  "npmCommand": ["pnpm"],
+  "theme": "dark",
+  "showCacheMissNotices": true,
+  "tuiMode": "regular"
+}` }}
+{{- range $key, $value := $defaults }}
+  {{- if not (hasKey $settings $key) }}
+    {{- $_ := set $settings $key $value }}
+  {{- end }}
+{{- end }}
+
+{{- /* Keep unrelated packages. Keep Lunar only at work, preserving pinned
+      versions and object-form declarations with resource filters. */}}
+{{- $work := .work_laptop }}
+{{- $provider := "npm:@lunarway/pi-lunar-litellm" }}
+{{- $providerPattern := printf "^%s(@.*)?$" $provider }}
+{{- $packages := list }}
+{{- $hasProvider := false }}
+{{- range $package := $settings.packages }}
+  {{- $source := $package }}
+  {{- if kindIs "map" $package }}
+    {{- $source = $package.source }}
+  {{- end }}
+  {{- $isProvider := regexMatch $providerPattern $source }}
+  {{- $hasProvider = or $hasProvider $isProvider }}
+  {{- if or (not $isProvider) $work }}
+    {{- $packages = append $packages $package }}
+  {{- end }}
+{{- end }}
+{{- if and $work (not $hasProvider) }}
+  {{- $packages = append $packages $provider }}
+{{- end }}
+{{- $_ := set $settings "packages" $packages }}
+
+{{- /* Normalize the managed wildcard, adding it only at work. Other model
+      choices remain local preferences and are left untouched. */}}
+{{- $scope := "lunar/*" }}
+{{- $models := without $settings.enabledModels $scope }}
+{{- if $work }}
+  {{- $models = append $models $scope }}
+{{- end }}
+{{- $_ := set $settings "enabledModels" $models }}
+
+{{- /* Emit the replacement JSON, retaining every other existing field. */}}
+{{- $settings | toPrettyJson }}
