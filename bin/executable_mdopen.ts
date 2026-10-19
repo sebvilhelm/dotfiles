@@ -6,7 +6,7 @@ import { gfm, gfmHtml } from "npm:micromark-extension-gfm@3.0.0";
 const HELP = `Usage: mdopen.ts [--no-open] <markdown-file>
 
 Render a markdown file to a temporary HTML file and open it in the browser.
-Mermaid code fences are rendered client-side in the generated page.
+Mermaid code fences are rendered client-side with Pele in the generated page.
 
 Options:
   --no-open   Generate the HTML file but do not open it
@@ -211,17 +211,14 @@ function buildDocument(
       .mermaid {
         overflow-x: auto;
         margin: 1.5rem 0;
-      }
-
-      .mermaid-error {
-        display: none;
-        margin-top: 1rem;
-        padding: 1rem;
-        border: 1px solid #d1242f;
-        border-radius: 0.5rem;
-        color: #d1242f;
-        background: color-mix(in srgb, #d1242f 10%, transparent);
-        white-space: pre-wrap;
+        --pele-bg: var(--bg);
+        --pele-fg: var(--fg);
+        --pele-muted: var(--muted);
+        --pele-line: var(--fg);
+        --pele-surface: var(--code-bg);
+        --pele-border: var(--border);
+        --pele-accent: var(--link);
+        --pele-error: #d1242f;
       }
     </style>
   </head>
@@ -229,10 +226,9 @@ function buildDocument(
     <main>
       <div class="source-path">${escapeHtml(sourcePath)}</div>
       ${body}
-      <div id="mermaid-error" class="mermaid-error"></div>
     </main>
     <script type="module">
-      import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+      import { mount } from "https://cdn.jsdelivr.net/npm/pele@1.6.0/dist/pele.js";
 
       const sourcePath = ${scriptSourcePath};
       const sourceUrl = new URL(sourcePath, "file://");
@@ -253,16 +249,8 @@ function buildDocument(
         link.href = new URL(href, sourceUrl).href;
       }
 
-      try {
-        mermaid.initialize({ startOnLoad: false, theme: "default" });
-        await mermaid.run({ querySelector: ".mermaid" });
-      } catch (error) {
-        console.error(error);
-        const element = document.querySelector("#mermaid-error");
-        if (element) {
-          element.textContent = "Mermaid render failed:\\n\\n" + String(error);
-          element.style.display = "block";
-        }
+      for (const element of document.querySelectorAll(".mermaid")) {
+        mount(element, element.textContent, { onError: console.error });
       }
     </script>
   </body>
