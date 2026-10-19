@@ -2,11 +2,13 @@
 
 import { micromark } from "npm:micromark@4.0.2";
 import { gfm, gfmHtml } from "npm:micromark-extension-gfm@3.0.0";
+import type {} from "npm:micromark-extension-gfm-task-list-item@2.1.0";
 
 const HELP = `Usage: mdopen.ts [--no-open] <markdown-file>
 
 Render a markdown file to a temporary HTML file and open it in the browser.
 Mermaid code fences are rendered client-side with Pele in the generated page.
+Task checkboxes are interactive; changes are not saved to the markdown file.
 
 Options:
   --no-open   Generate the HTML file but do not open it
@@ -82,7 +84,13 @@ async function main() {
 function renderMarkdown(markdown: string): string {
   const rendered = micromark(markdown, {
     extensions: [gfm()],
-    htmlExtensions: [gfmHtml()],
+    htmlExtensions: [gfmHtml(), {
+      enter: {
+        taskListCheck() {
+          this.tag('<input type="checkbox" ');
+        },
+      },
+    }],
   });
 
   return rewriteMermaidBlocks(rendered);
