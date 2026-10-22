@@ -1,0 +1,14 @@
+{
+  "model": { "provider": "openai", "id": "gpt-6-luna" },
+  "thinkingLevel": "medium",
+  "tools": [
+    "web_search",
+    "read"
+  ],
+  "skills": [],
+  "inheritContext": false,
+  "prompt": {
+    "mode": "replace",
+    "file": "./research.md"
+  }
+}
