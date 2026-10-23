@@ -9,6 +9,7 @@
 
 {{- /* Seed only missing fields. Never seed Pi-owned state such as
       lastChangelogVersion or overwrite explicit false values and empty arrays. */}}
+{{- $work := .work_laptop }}
 {{- $defaults := fromJson `{
   "defaultProvider": "openai",
   "defaultModel": "gpt-6.1-sol",
@@ -19,7 +20,6 @@
     "openai/gpt-6-luna",
     "openai/gpt-6-astra"
   ],
-  "packages": ["npm:@plannotator/pi-extension"],
   "steeringMode": "one-at-a-time",
   "followUpMode": "one-at-a-time",
   "enableInstallTelemetry": false,
@@ -36,21 +36,39 @@
   {{- end }}
 {{- end }}
 
-{{- /* Keep unrelated packages. Keep Lunar only at work, preserving pinned
-      versions and object-form declarations with resource filters. */}}
-{{- $work := .work_laptop }}
+{{- /* Use a Lunar model by default on work machines; restore the managed
+      OpenAI default when a Lunar configuration is rendered for personal use. */}}
+{{- $lunarModels := list "anthropic.claude-haiku-5-5" "anthropic.claude-opus-5-5" "anthropic.claude-sonnet-5-5" "auto" "gpt-6-astra" "gpt-6-luna" "gpt-6.1-sol" "lunar-anthropic-auto" }}
+{{- $openaiModels := list "gpt-6.1-sol" "gpt-6-luna" "gpt-6-astra" }}
+{{- if $work }}
+  {{- $_ := set $settings "defaultProvider" "lunar" }}
+  {{- if not (has $settings.defaultModel $lunarModels) }}
+    {{- $_ := set $settings "defaultModel" "gpt-6.1-sol" }}
+  {{- end }}
+{{- else if eq $settings.defaultProvider "lunar" }}
+  {{- $_ := set $settings "defaultProvider" "openai" }}
+  {{- if not (has $settings.defaultModel $openaiModels) }}
+    {{- $_ := set $settings "defaultModel" "gpt-6.1-sol" }}
+  {{- end }}
+{{- end }}
+
+{{- /* Remove the former third-party Plannotator Pi extension. Keep unrelated
+      packages, and keep the Lunar provider only at work. */}}
 {{- $provider := "npm:@lunarway/pi-lunar-litellm" }}
 {{- $providerPattern := printf "^%s(@.*)?$" $provider }}
+{{- $plannotatorPattern := "^npm:@plannotator/pi-extension(@.*)?$" }}
 {{- $packages := list }}
 {{- $hasProvider := false }}
-{{- range $package := $settings.packages }}
+{{- $existingPackages := get $settings "packages" | default (list) }}
+{{- range $package := $existingPackages }}
   {{- $source := $package }}
   {{- if kindIs "map" $package }}
     {{- $source = $package.source }}
   {{- end }}
   {{- $isProvider := regexMatch $providerPattern $source }}
+  {{- $isPlannotator := regexMatch $plannotatorPattern $source }}
   {{- $hasProvider = or $hasProvider $isProvider }}
-  {{- if or (not $isProvider) $work }}
+  {{- if and (not $isPlannotator) (or (not $isProvider) $work) }}
     {{- $packages = append $packages $package }}
   {{- end }}
 {{- end }}
@@ -59,12 +77,33 @@
 {{- end }}
 {{- $_ := set $settings "packages" $packages }}
 
-{{- /* Normalize the managed wildcard, adding it only at work. Other model
-      choices remain local preferences and are left untouched. */}}
-{{- $scope := "lunar/*" }}
-{{- $models := without $settings.enabledModels $scope }}
+{{- /* Load the locally maintained Plannotator bridge only on Lunar machines.
+      It lives outside the auto-discovered extensions directory. */}}
+{{- $plannotatorExtension := "./local-extensions/plannotator/index.ts" }}
+{{- $extensions := list }}
+{{- $existingExtensions := get $settings "extensions" | default (list) }}
+{{- range $extension := $existingExtensions }}
+  {{- if ne $extension $plannotatorExtension }}
+    {{- $extensions = append $extensions $extension }}
+  {{- end }}
+{{- end }}
 {{- if $work }}
+  {{- $extensions = append $extensions $plannotatorExtension }}
+{{- end }}
+{{- $_ := set $settings "extensions" $extensions }}
+{{- /* Work machines expose only Lunar models. Personal configs retain their
+      existing choices, apart from the work-only Lunar wildcard. */}}
+{{- $scope := "lunar/*" }}
+{{- $models := list }}
+{{- if $work }}
+  {{- range $model := $settings.enabledModels }}
+    {{- if and (hasPrefix "lunar/" $model) (ne $model $scope) (not (has $model $models)) }}
+      {{- $models = append $models $model }}
+    {{- end }}
+  {{- end }}
   {{- $models = append $models $scope }}
+{{- else }}
+  {{- $models = without $settings.enabledModels $scope }}
 {{- end }}
 {{- $_ := set $settings "enabledModels" $models }}
 
