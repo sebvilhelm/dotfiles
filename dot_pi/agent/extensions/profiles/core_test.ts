@@ -309,3 +309,49 @@ Deno.test("shipped research profile is restrictive and has a standalone research
   assert.equal(loaded.profile.inheritContext, false);
   assert.match(loaded.promptText ?? "", /^You are a research assistant/);
 });
+
+Deno.test("tutor profile is read-only and excludes only Lunar skills", async () => {
+  const tutor = await loadProfile(resolve("dot_pi/agent"), "tutor");
+
+  assert.deepEqual(tutor.profile.tools, {
+    include: ["web_search", "read"],
+  });
+  assert.deepEqual(tutor.profile.skills, {
+    include: undefined,
+    exclude: [
+      "~/.agents/skills/lunar-*/SKILL.md",
+      "~/.pi/agent/skills/houston-*/SKILL.md",
+    ],
+  });
+  assert.equal(
+    matchesSelection(
+      tutor.profile.skills,
+      "go-projects",
+      tutor.directory,
+      join(homedir(), ".agents/skills/go-projects/SKILL.md"),
+    ),
+    true,
+  );
+  assert.equal(
+    matchesSelection(
+      tutor.profile.skills,
+      "graphql-server",
+      tutor.directory,
+      join(homedir(), ".agents/skills/lunar-graphql-server/SKILL.md"),
+    ),
+    false,
+  );
+  assert.equal(
+    matchesSelection(
+      tutor.profile.skills,
+      "houston-activity-queue-definitions",
+      tutor.directory,
+      join(
+        homedir(),
+        ".pi/agent/skills/houston-activity-queue-definitions/SKILL.md",
+      ),
+    ),
+    false,
+  );
+  assert.match(tutor.promptText ?? "", /^You are a live programming tutor/);
+});

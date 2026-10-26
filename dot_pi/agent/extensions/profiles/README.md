@@ -5,7 +5,13 @@ Start Pi with a named, user-configurable session profile:
 ```sh
 pi --profile research
 pi --profile research --model openai/your-model --thinking high
+pi --profile tutor
+pi --profile tutor-lunar
 ```
+
+`tutor` is the general programming tutor; `tutor-lunar` also enables the Lunar
+and Houston skills. Both expose only `read` and `web_search`—not `bash`,
+`write`, or `edit`.
 
 Requires Pi 1.4 or newer (structured `systemPromptOptions`). The existing
 `research.ts` / `--research` mode is unchanged; do not combine it with
@@ -93,7 +99,10 @@ exclusions for work-specific skills with generic names:
 ```json
 {
   "skills": {
-    "exclude": ["~/.agents/skills/lunar-*", "~/.pi/agent/skills/houston-*"]
+    "exclude": [
+      "~/.agents/skills/lunar-*/SKILL.md",
+      "~/.pi/agent/skills/houston-*/SKILL.md"
+    ]
   }
 }
 ```
@@ -149,7 +158,7 @@ implementation permits. For example, `bash` can read a skill without using
 Existing conversation history is not erased or isolated by a profile. Tool
 modules execute trusted local code with Pi's full OS permissions.
 
-## Included Research profile
+## Included profiles
 
 The included `research.json` uses `openai/gpt-6-luna` with medium reasoning,
 selects only `web_search` and `read`, excludes all skills and coding context
@@ -157,12 +166,22 @@ files, and uses `research.md` as its replacement prompt. The prompt is adapted
 from the unchanged research extension, permitting local reads when the user
 requests them.
 
+The checked-in `tutor.json` uses `tutor.md`, exposes only `read` and
+`web_search`, and inherits all discovered skills except those under the Lunar
+and Houston skill directories. It retains project context files by default.
+
+This machine also has a local-only `tutor-lunar.json` in
+`~/.pi/agent/profiles/`. It uses the same prompt and tools, but selects only
+skills from `~/.agents/skills/lunar-*/SKILL.md` and
+`~/.pi/agent/skills/houston-*/SKILL.md`; it is intentionally not managed by
+chezmoi.
+
 ## Verification
 
 Run from the chezmoi repository root:
 
 ```sh
-deno fmt --check dot_pi/agent/extensions/profiles dot_pi/agent/profiles/research.json
+deno fmt --check dot_pi/agent/extensions/profiles dot_pi/agent/profiles
 deno lint dot_pi/agent/extensions/profiles
 deno test --allow-read --allow-write --allow-env --allow-sys=homedir dot_pi/agent/extensions/profiles/core_test.ts
 PI_PACKAGE_DIR="$(pnpm root -g)/@earendil-works/pi-coding-agent" \

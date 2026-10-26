@@ -1,0 +1,13 @@
+{
+  "tools": ["web_search", "read"],
+  "skills": {
+    "exclude": [
+      "~/.agents/skills/lunar-*/SKILL.md",
+      "~/.pi/agent/skills/houston-*/SKILL.md"
+    ]
+  },
+  "prompt": {
+    "mode": "replace",
+    "file": "./tutor.md"
+  }
+}
