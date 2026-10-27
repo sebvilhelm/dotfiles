@@ -1,5 +1,6 @@
 export VISUAL=nvim
 export EDITOR=$VISUAL
+export PSQL_PAGER='nvim -R -n -i NONE -c "setlocal nowrap" -'
 
 GOPATH=~/go
 GOBIN="$GOPATH/bin"
