@@ -244,7 +244,7 @@ function buildSimplifyPrompt(
     .map((file) => `- ${file.path} (${file.status})`)
     .join("\n");
 
-  return `Review the following recently changed files and apply simplification improvements.
+  return `Review the selected code change and simplify only the code it introduced or modified.
 
 Repository root: ${repositoryRoot}
 Change scope: ${scopeDescription}
@@ -260,18 +260,26 @@ Use Jujutsu commands, not git.
 
 ## Scope
 
-Only review and modify these files:
+Only simplify additions and modifications in the selected change, within these files:
 ${fileList}
+
+The file list is an allowlist, not permission to refactor entire files.
+
+- For newly added files, the whole file is in scope.
+- For modified, renamed, or copied files, only code actually added or modified by the selected change is in scope. Unchanged context lines shown in a diff are not part of the change.
+- Read pre-existing code for context, but leave it unchanged. Do not clean up existing helpers, test fixtures, setup code, error handling, returns, or formatting merely because they are in a listed file or a partially changed function.
+- If a simplification requires modifying untouched code, skip it rather than broadening the scope.
+- If the scope identifies only file paths, determine the intended jj revision or range before editing; ask if the baseline is ambiguous. Explicit paths restrict the change scope, not replace it with whole-file scope.
 
 ## Process
 
-1. Read each file listed above from the repository root.
-2. Identify concrete improvements such as dead code, unclear names, redundant logic, and inconsistent patterns.
-3. Apply changes one file at a time.
-4. Run the relevant formatters, linters, typecheckers, and tests after making changes.
-5. Review the final change with jj diff and summarize what changed and why.
+1. Inspect the selected jj diff before editing. Resolve and record its revisions and baseline so the scope remains fixed if @ or @- changes during the task.
+2. Read the listed files and applicable instructions. Identify simplifications only within the selected change; treat surrounding code as read-only context.
+3. Apply changes one file at a time, preserving all pre-existing code outside the selected change.
+4. Run the relevant formatters, linters, typecheckers, and tests. Do not fix unrelated findings or retain formatter-only changes to untouched code.
+5. Review the final jj diff against the original selected change. Verify that every simplification is confined to that change, undo only your out-of-scope edits, and summarize what changed and why.
 
-Do not add features, change public APIs, modify files outside the list, or use git commands.`;
+Do not add features, change public APIs, refactor untouched code, modify files outside the list, or use git commands.`;
 }
 
 async function handleSimplifyCommand(
