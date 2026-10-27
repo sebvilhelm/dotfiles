@@ -23,6 +23,7 @@ type NotificationLevel = "info" | "warning" | "error";
 export type RepositoryRestoreState = {
   repoRoot: string;
   originalChangeId: string;
+  originalCommitId?: string;
   pullRequestNumber: number;
 };
 
@@ -66,6 +67,8 @@ function isRestoreState(value: unknown): value is RepositoryRestoreState {
     isRecord(value) &&
     typeof value.repoRoot === "string" &&
     typeof value.originalChangeId === "string" &&
+    (value.originalCommitId === undefined ||
+      typeof value.originalCommitId === "string") &&
     typeof value.pullRequestNumber === "number"
   );
 }
@@ -606,9 +609,15 @@ export class ReviewWorkflow {
   ): Promise<boolean> {
     const reviewChangeId = restore.reviewChangeId ??
       (await currentChangeId(this.pi, restore.repoRoot));
+    // jj new can abandon an empty, undescribed working copy. Its change ID
+    // then stops resolving, but the commit ID can still restore it. Prefer the
+    // change ID so that rewrites made during the review are preserved.
+    const revision = restore.originalCommitId
+      ? `coalesce(present(${restore.originalChangeId}), ${restore.originalCommitId})`
+      : restore.originalChangeId;
     const result = await this.pi.exec(
       "jj",
-      ["--repository", restore.repoRoot, "edit", restore.originalChangeId],
+      ["--repository", restore.repoRoot, "edit", revision],
       { timeout: 30_000 },
     );
     if (result.code !== 0) {

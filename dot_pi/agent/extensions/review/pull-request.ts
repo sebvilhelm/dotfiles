@@ -345,11 +345,11 @@ async function fetchBookmark(
   return true;
 }
 
-async function resolveSingleRevisionId(
+async function resolveSingleRevision(
   pi: ExtensionAPI,
   repoRoot: string,
   revset: string,
-  template: 'commit_id ++ "\\n"' | 'change_id ++ "\\n"',
+  template: string,
 ): Promise<string | undefined> {
   const result = await pi.exec(
     "jj",
@@ -446,7 +446,7 @@ async function preparePullRequest(
     return undefined;
   }
 
-  const forkPoint = await resolveSingleRevisionId(
+  const forkPoint = await resolveSingleRevision(
     pi,
     repoRoot,
     `fork_point(${pullRequest.baseRefOid} | ${pullRequest.headRefOid})`,
@@ -460,13 +460,15 @@ async function preparePullRequest(
     );
     return undefined;
   }
-  const originalChangeId = await resolveSingleRevisionId(
+  const originalRevision = await resolveSingleRevision(
     pi,
     repoRoot,
     "@",
-    'change_id ++ "\\n"',
+    'change_id ++ " " ++ commit_id ++ "\\n"',
   );
-  if (!originalChangeId) {
+  const [originalChangeId, originalCommitId] = originalRevision?.split(" ") ??
+    [];
+  if (!originalChangeId || !originalCommitId) {
     notify(
       ctx,
       "Could not record the current Jujutsu working-copy change",
@@ -478,6 +480,7 @@ async function preparePullRequest(
   const restore: RepositoryRestoreState = {
     repoRoot,
     originalChangeId,
+    originalCommitId,
     pullRequestNumber: pullRequest.number,
   };
 
