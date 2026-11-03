@@ -8,6 +8,7 @@
 
 - Use `jj` for every version-control operation. Never run the `git` executable; commands under `jj git` are allowed.
 - If an operation appears to require the `git` executable, stop and ask instead.
+- Split work into atomic, bisectable commits: one coherent change per commit, including its tests, with each commit buildable and passing relevant checks. Keep unrelated refactors and formatting separate.
 
 {{- if .work_laptop }}
 
