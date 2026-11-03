@@ -1,13 +1,13 @@
 ---
 name: go-projects
-description: "Go development workflow and style for this environment. Use whenever editing Go code, tests, modules, or build logic: prefer current Go idioms, use the local style rules here, and run the relevant Go verification commands afterward."
+description: "Go style and verification for this environment. Use when editing Go code, tests, modules, or build logic."
 ---
 
 # Go Projects
 
 ## Style
 
-- Use the latest available Go syntax and standard library features when they improve the code.
+- Use modern Go idioms supported by the project’s declared Go version and toolchain.
 - `go fix` can help upgrade syntax, but revert unrelated changes.
 - Prefer local mapper functions over inline mapping or package-level mapper helpers unless the mapping is materially more complex than copying primitive fields or slices.
 - Prefer struct methods for collection-style helpers.

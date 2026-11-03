@@ -1,13 +1,13 @@
 ---
 name: typescript-projects
-description: "TypeScript and JavaScript workflow for this environment. Use whenever editing TS or JS code, especially types and package-based tooling: read current library docs, avoid `any` and unnecessary casts, and run the relevant package commands afterward."
+description: "TypeScript and JavaScript typing, API usage, and verification. Use when editing TS or JS code."
 ---
 
 # TypeScript Projects
 
 ## Approach
 
-- Read current online docs for libraries before relying on remembered usage details.
+- Resolve API uncertainty against the installed library version, using local types/source or version-matched documentation.
 - When working on types, avoid `any` and avoid casting unless there is no sound alternative. Model the types correctly.
 
 ## Verification
