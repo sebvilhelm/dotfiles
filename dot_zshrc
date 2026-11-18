@@ -72,6 +72,25 @@ if command -v mise >/dev/null 2>&1; then
 fi
 eval "$(starship init zsh)"
 
+if [[ -n $REX_SESSION && -n $REX_BLOCK ]] && (( $+commands[rex] )); then
+  _rex_update_directory_label() {
+    local label=${PWD:t} result
+    label=${label:-/}
+    result=$(command rex --autostart=false --timeout 1s do --json \
+      --session "$REX_SESSION" --block "$REX_BLOCK" update_directory_session_label \
+      "label=$label" "previous=${_rex_directory_label:-}" 2>/dev/null)
+    if [[ $result == 1 ]]; then
+      typeset -g _rex_directory_label=$label
+    fi
+  }
+
+  _rex_update_directory_label
+  if [[ -n ${_rex_directory_label:-} ]]; then
+    autoload -Uz add-zsh-hook
+    add-zsh-hook chpwd _rex_update_directory_label
+  fi
+fi
+
 # https://github.com/oxidecomputer/skepsis
 alias sk="npx --prefix ~/code/skepsis tsx ~/code/skepsis/cli.ts"
 

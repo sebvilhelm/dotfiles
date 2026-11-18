@@ -60,6 +60,8 @@ Then start tmux and press `Ctrl-a I` once to install plugins. The tmux prefix in
 
 Rex uses the same `Ctrl-a` prefix as Herdr. Run `rex config reload` after applying the dotfiles, then run **Apply Ghostty and Herdr Preferences** once from Rex's command palette. The action sets the Mac client preferences and imports Gruvbox Dark from `/Applications/Ghostty.app`.
 
+`Ctrl-a` then `Shift-n`, `Cmd-Shift-n`, and **New Session (Follow Directory)** create a session whose label follows the first Zsh shell's directory. Renaming it manually overrides the automatic label; other panes and existing sessions are left alone.
+
 If you want a local Neovim build, clone `neovim/neovim`, install its build dependencies, and build it with `make CMAKE_BUILD_TYPE=Release`.
 
 Open `nvim` once to let `lazy.nvim` clone and install plugins.
