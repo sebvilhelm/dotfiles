@@ -24,9 +24,6 @@ prefix("z", "pane.zoom")
 -- Send Ctrl+A to the shell (or a nested multiplexer) by pressing it twice.
 prefix("ctrl+a", "pane.send_key", { key = "ctrl+a" })
 
--- Ghostty's alt+backspace binding sends Escape followed by DEL.
-rex.bind("alt+backspace", "com.superlogical.terminal.write", { data = "\027\127" })
-
 rex.action({
 	name = "edit_scrollback",
 	title = "Edit Scrollback in Neovim",
