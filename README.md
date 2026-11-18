@@ -58,6 +58,8 @@ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 Then start tmux and press `Ctrl-a I` once to install plugins. The tmux prefix in this config is `Ctrl-a`.
 
+Rex uses the same `Ctrl-a` prefix as Herdr. Run `rex config reload` after applying the dotfiles, then run **Apply Ghostty and Herdr Preferences** once from Rex's command palette. The action sets the Mac client preferences and imports Gruvbox Dark from `/Applications/Ghostty.app`.
+
 If you want a local Neovim build, clone `neovim/neovim`, install its build dependencies, and build it with `make CMAKE_BUILD_TYPE=Release`.
 
 Open `nvim` once to let `lazy.nvim` clone and install plugins.
