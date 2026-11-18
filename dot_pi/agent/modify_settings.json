@@ -12,13 +12,13 @@
 {{- $work := .work_laptop }}
 {{- $defaults := fromJson `{
   "defaultProvider": "openai",
-  "defaultModel": "gpt-6.1-sol",
+  "defaultModel": "gpt-6.2-sol",
   "defaultThinkingLevel": "high",
   "defaultTools": ["+codemode"],
   "enabledModels": [
-    "openai/gpt-6.1-sol",
+    "openai/gpt-6.2-sol",
     "openai/gpt-6-luna",
-    "openai/gpt-6-astra"
+    "openai/gpt-6.2-astra"
   ],
   "steeringMode": "one-at-a-time",
   "followUpMode": "one-at-a-time",
@@ -38,17 +38,17 @@
 
 {{- /* Use a Lunar model by default on work machines; restore the managed
       OpenAI default when a Lunar configuration is rendered for personal use. */}}
-{{- $lunarModels := list "anthropic.claude-haiku-5-5" "anthropic.claude-opus-5-5" "anthropic.claude-sonnet-5-5" "auto" "gpt-6-astra" "gpt-6-luna" "gpt-6.1-sol" "lunar-anthropic-auto" }}
-{{- $openaiModels := list "gpt-6.1-sol" "gpt-6-luna" "gpt-6-astra" }}
+{{- $lunarModels := list "anthropic.claude-haiku-5-5" "anthropic.claude-opus-5-5" "anthropic.claude-sonnet-5-5" "auto" "gpt-6.2-astra" "gpt-6-luna" "gpt-6.2-sol" "lunar-anthropic-auto" }}
+{{- $openaiModels := list "gpt-6.2-sol" "gpt-6-luna" "gpt-6.2-astra" }}
 {{- if $work }}
   {{- $_ := set $settings "defaultProvider" "lunar" }}
   {{- if not (has $settings.defaultModel $lunarModels) }}
-    {{- $_ := set $settings "defaultModel" "gpt-6.1-sol" }}
+    {{- $_ := set $settings "defaultModel" "gpt-6.2-sol" }}
   {{- end }}
 {{- else if eq $settings.defaultProvider "lunar" }}
   {{- $_ := set $settings "defaultProvider" "openai" }}
   {{- if not (has $settings.defaultModel $openaiModels) }}
-    {{- $_ := set $settings "defaultModel" "gpt-6.1-sol" }}
+    {{- $_ := set $settings "defaultModel" "gpt-6.2-sol" }}
   {{- end }}
 {{- end }}
 
