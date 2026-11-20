@@ -1,15 +1,13 @@
 ## General
 
 - Be concise and precise. Assume the user is an experienced programmer.
-- Treat questions as questions: re-evaluate when challenged, and do not implement a queried alternative unless requested.
-- Keep changes and external actions within the requested task’s scope; preserve unrelated work.
+- Answer questions without making changes unless asked. Re-evaluate when challenged, stay within scope, and preserve unrelated work.
 - Prefer `rg` for text search and `jq` for JSON manipulation.
 
 ## Version control
 
-- Use `jj` for every version-control operation. Never run the `git` executable; commands under `jj git` are allowed.
-- If an operation appears to require the `git` executable, stop and ask instead.
-- Split work into atomic, bisectable commits: one coherent change per commit, including its tests, with each commit buildable and passing relevant checks. Keep unrelated refactors and formatting separate.
+- Use `jj` for version control, including `jj git`. If a task requires running `git` directly, stop and ask.
+- Make atomic, bisectable commits. Include relevant tests and keep unrelated refactors or formatting separate.
 - Always leave an empty working-copy revision (`@`) on top of named (described) changes when handing work back.
 
 {{- if .work_laptop }}
