@@ -1,14 +1,46 @@
+# Editor and pager
 export VISUAL=nvim
 export EDITOR=$VISUAL
 export PSQL_PAGER='nvim -R -n -i NONE -c "setlocal nowrap" -'
 
+# PATH and tool locations
+
+# Go
 GOPATH=~/go
 GOBIN="$GOPATH/bin"
 if [[ -d "$GOBIN" ]]; then
   export PATH="$GOBIN:$PATH"
 fi
 
-# Tree
+# User binaries
+if [[ -d "$HOME/.local/bin" ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+if [[ -d "$HOME/bin" ]]; then
+  export PATH="$HOME/bin:$PATH"
+fi
+
+# pnpm
+export PNPM_HOME="$HOME/Library/pnpm"
+if [[ -d "$PNPM_HOME/bin" && ":$PATH:" != *":$PNPM_HOME/bin:"* ]]; then
+  export PATH="$PNPM_HOME/bin:$PATH"
+fi
+
+# Homebrew
+if [[ -x /opt/homebrew/opt/libpq/bin/psql ]]; then
+  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+fi
+
+if [[ -x /opt/homebrew/opt/openjdk/bin/java ]]; then
+  export JAVA_HOME="/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
+  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+fi
+
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
+
+# Shell helpers
 function t() {
   # Defaults to 3 levels deep, do more with `t 5` or `t 1`
   # pass additional args after
@@ -23,24 +55,7 @@ function take() {
   mkdir -p $@ && cd ${@:$#}
 }
 
-
-
-if [[ -d "$HOME/.local/bin" ]]; then
-  export PATH="$HOME/.local/bin:$PATH"
-fi
-if [[ -d "$HOME/bin" ]]; then
-  export PATH="$HOME/bin:$PATH"
-fi
-
-# pnpm
-export PNPM_HOME="$HOME/Library/pnpm"
-if [[ -d "$PNPM_HOME/bin" && ":$PATH:" != *":$PNPM_HOME/bin:"* ]]; then
-  export PATH="$PNPM_HOME/bin:$PATH"
-fi
-# pnpm end
-
-
-# Load Zimfw
+# Zim plugins
 ZIM_HOME=${ZDOTDIR:-${HOME}}/.zim
 # Download zimfw plugin manager if missing.
 if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
@@ -58,18 +73,21 @@ compinit -C
 # Initialize modules.
 source ${ZIM_HOME}/init.zsh
 
+# Local Lunar configuration
 if [ -f ~/lunar.zsh ]; then
   source ~/lunar.zsh
 fi
 
-# Load Completions
+# Completions
+# Refresh the cache once a week.
 autoload -Uz compinit
-for dump in ~/.zcompdump(N.mh+168); do #Only do it once a week. No slow terminal for me please
+for dump in ~/.zcompdump(N.mh+168); do
   compinit
 done
 compinit -C
 source <(COMPLETE=zsh jj)
 
+# Shell integrations
 eval "$(zoxide init zsh)"
 eval "$(atuin init zsh)"
 if command -v mise >/dev/null 2>&1; then
@@ -77,6 +95,7 @@ if command -v mise >/dev/null 2>&1; then
 fi
 eval "$(starship init zsh)"
 
+# Rex pane labels
 if [[ -n $REX_SESSION && -n $REX_BLOCK ]] && (( $+commands[rex] )); then
   _rex_update_directory_label() {
     local label=${PWD:t} result
@@ -94,17 +113,4 @@ if [[ -n $REX_SESSION && -n $REX_BLOCK ]] && (( $+commands[rex] )); then
     autoload -Uz add-zsh-hook
     add-zsh-hook chpwd _rex_update_directory_label
   fi
-fi
-
-if [[ -x /opt/homebrew/opt/libpq/bin/psql ]]; then
-  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
-fi
-
-if [[ -x /opt/homebrew/opt/openjdk/bin/java ]]; then
-  export JAVA_HOME="/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
-  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
-fi
-
-if [[ -x /opt/homebrew/bin/brew ]]; then
-  export PATH="/opt/homebrew/bin:$PATH"
 fi
