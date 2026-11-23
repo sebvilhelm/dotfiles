@@ -4,7 +4,9 @@ export PSQL_PAGER='nvim -R -n -i NONE -c "setlocal nowrap" -'
 
 GOPATH=~/go
 GOBIN="$GOPATH/bin"
-PATH="$GOBIN:$PATH"
+if [[ -d "$GOBIN" ]]; then
+  export PATH="$GOBIN:$PATH"
+fi
 
 # Tree
 function t() {
@@ -23,15 +25,18 @@ function take() {
 
 
 
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$HOME/bin:$PATH"
+if [[ -d "$HOME/.local/bin" ]]; then
+  export PATH="$HOME/.local/bin:$PATH"
+fi
+if [[ -d "$HOME/bin" ]]; then
+  export PATH="$HOME/bin:$PATH"
+fi
 
 # pnpm
 export PNPM_HOME="$HOME/Library/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-esac
+if [[ -d "$PNPM_HOME/bin" && ":$PATH:" != *":$PNPM_HOME/bin:"* ]]; then
+  export PATH="$PNPM_HOME/bin:$PATH"
+fi
 # pnpm end
 
 
@@ -94,4 +99,15 @@ fi
 # https://github.com/oxidecomputer/skepsis
 alias sk="npx --prefix ~/code/skepsis tsx ~/code/skepsis/cli.ts"
 
-export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+if [[ -x /opt/homebrew/opt/libpq/bin/psql ]]; then
+  export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
+fi
+
+if [[ -x /opt/homebrew/opt/openjdk/bin/java ]]; then
+  export JAVA_HOME="/opt/homebrew/opt/openjdk/libexec/openjdk.jdk/Contents/Home"
+  export PATH="/opt/homebrew/opt/openjdk/bin:$PATH"
+fi
+
+if [[ -x /opt/homebrew/bin/brew ]]; then
+  export PATH="/opt/homebrew/bin:$PATH"
+fi
