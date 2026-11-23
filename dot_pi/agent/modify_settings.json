@@ -37,7 +37,8 @@
 {{- end }}
 
 {{- /* Use a Lunar model by default on work machines; restore the managed
-      OpenAI default when a Lunar configuration is rendered for personal use. */}}
+      OpenAI default when switching to personal use or retiring a GPT-6.1 default. */}}
+{{- $retiredModel := `(?i)(^|[/.])gpt-6\.1($|[-:*?])` }}
 {{- $lunarModels := list "anthropic.claude-haiku-5-5" "anthropic.claude-opus-5-5" "anthropic.claude-sonnet-5-5" "auto" "gpt-6.2-astra" "gpt-6-luna" "gpt-6.2-sol" "lunar-anthropic-auto" }}
 {{- $openaiModels := list "gpt-6.2-sol" "gpt-6-luna" "gpt-6.2-astra" }}
 {{- if $work }}
@@ -45,7 +46,7 @@
   {{- if not (has $settings.defaultModel $lunarModels) }}
     {{- $_ := set $settings "defaultModel" "gpt-6.2-sol" }}
   {{- end }}
-{{- else if eq $settings.defaultProvider "lunar" }}
+{{- else if or (eq $settings.defaultProvider "lunar") (regexMatch $retiredModel (toString $settings.defaultModel)) }}
   {{- $_ := set $settings "defaultProvider" "openai" }}
   {{- if not (has $settings.defaultModel $openaiModels) }}
     {{- $_ := set $settings "defaultModel" "gpt-6.2-sol" }}
@@ -91,19 +92,17 @@
   {{- $extensions = append $extensions $plannotatorExtension }}
 {{- end }}
 {{- $_ := set $settings "extensions" $extensions }}
-{{- /* Work machines expose only Lunar models. Personal configs retain their
-      existing choices, apart from the work-only Lunar wildcard. */}}
-{{- $scope := "lunar/*" }}
+{{- /* Keep Lunar's model scope on work machines, excluding GPT-6.1 via
+      a minimatch negated extglob. Drop old explicit GPT-6.1 selections too. */}}
+{{- $scope := "lunar/!(gpt-6.1|gpt-6.1-*)" }}
 {{- $models := list }}
-{{- if $work }}
-  {{- range $model := $settings.enabledModels }}
-    {{- if and (hasPrefix "lunar/" $model) (ne $model $scope) (not (has $model $models)) }}
-      {{- $models = append $models $model }}
-    {{- end }}
+{{- range $model := without $settings.enabledModels "lunar/*" $scope }}
+  {{- if and (not (regexMatch $retiredModel $model)) (or (not $work) (and (hasPrefix "lunar/" $model) (not (has $model $models)))) }}
+    {{- $models = append $models $model }}
   {{- end }}
+{{- end }}
+{{- if $work }}
   {{- $models = append $models $scope }}
-{{- else }}
-  {{- $models = without $settings.enabledModels $scope }}
 {{- end }}
 {{- $_ := set $settings "enabledModels" $models }}
 
