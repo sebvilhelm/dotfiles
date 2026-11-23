@@ -96,9 +96,6 @@ if [[ -n $REX_SESSION && -n $REX_BLOCK ]] && (( $+commands[rex] )); then
   fi
 fi
 
-# https://github.com/oxidecomputer/skepsis
-alias sk="npx --prefix ~/code/skepsis tsx ~/code/skepsis/cli.ts"
-
 if [[ -x /opt/homebrew/opt/libpq/bin/psql ]]; then
   export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 fi
